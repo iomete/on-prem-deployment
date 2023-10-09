@@ -1,4 +1,4 @@
-# IOMETE On-Premise Deployment Guide
+# IOMETE On-Premise Self-serve Deployment Guide (Private Preview)
 
 IOMETE can be deployed on-premise in a Kubernetes cluster. This guide will walk you through the steps to deploy IOMETE on-premise.
 
@@ -16,6 +16,7 @@ IOMETE can be deployed on-premise in a Kubernetes cluster. This guide will walk 
 - Tools
   - kubectl
   - helm
+  - aws cli (to connect to the object storage)
 
 Rest of the hardware resources will be used by Spark driver and executors.
 
@@ -27,8 +28,14 @@ IOMETE controller requires 2 CPU and 4GB of RAM. Spark driver and executors will
 ## Deployment
 
 > Note: Make sure you have configured the `kubectl` to point to the correct cluster (context).
+> Note: Clone this repo and switch the current directory to this directory.
 
 ### 1. Prepare Buckets in Object Storage
+
+Optionally, you can deploy test minio deployment
+```shell
+kubectl apply -f files/minio-test-deployment.yaml
+```
 
 Create dedicated 2 buckets in your object storage. One for the lakehouse and the other for assets.
 
@@ -50,6 +57,9 @@ alias aws='aws --endpoint-url http://localhost:9000'
 aws s3 mb s3://lakehouse
 aws s3 mb s3://assets
 
+# create `spark-history` folder in assets bucket
+aws s3api put-object --bucket assets --key spark-history/ --content-length 0
+
 # verify buckets
 aws s3 ls
 ```
@@ -66,8 +76,6 @@ helm repo update
 
 Install FluxCD
 
-> Note: Clone this repo and switch to this directory.
-
 ```shell
 helm upgrade --install --namespace fluxcd \
   --create-namespace fluxcd fluxcd-community/flux2 \
@@ -80,12 +88,13 @@ helm upgrade --install --namespace fluxcd \
 
 And deploy IOMETE repository. This repository contains the IOMETE helm charts.
 ```shell
+kubectl create namespace iomete-system
 kubectl apply -f files/iomete-helm-repo.yaml
 ```
 
 ### 3. Deploy data plane secret
 
-Example (see: `files/iomete-data-plane-secret-with-mino.json`):
+Example (see: `files/iomete-data-plane-secret-with-minio.json`):
 ```json
 {
   "cloud": "on-prem",
@@ -94,11 +103,11 @@ Example (see: `files/iomete-data-plane-secret-with-mino.json`):
   "storage_configuration": {
     "minio": {
       "enabled": "true",
-      "host": "minio.default.svc.cluster.local:9000",
+      "host": "http://minio.default.svc.cluster.local:9000",
       "access_key": "admin",
       "secret_key": "password",
       "lakehouse_bucket_name": "lakehouse",
-      "assets_bucket_name": "lakehouse"
+      "assets_bucket_name": "assets"
     }
   }
 }
@@ -115,14 +124,13 @@ Example (see: `files/iomete-data-plane-secret-with-mino.json`):
     - `secret_key`: Minio secret key.
     - `lakehouse_bucket_name`: Name of the lakehouse bucket.
     - `assets_bucket_name`: Name of the assets bucket.
-  - `dell-ecs`: Dell ECS configuration is similar to Minio configuration. See: `files/iomete-data-plane-secret-with-dell-ecs.json`
+  - `dell_ecs`: Dell ECS configuration is similar to Minio configuration. See: `files/iomete-data-plane-secret-with-dell-ecs.json`
 
 
 Once you configure the data plane secret json file, deploy it to the cluster.
 
 ```shell
-kubectl create namespace iomete-system
-kubectl create secret -n iomete-system generic iomete-data-plane-secret --from-file=settings=files/iomete-data-plane-secret-with-mino.json
+kubectl create secret -n iomete-system generic iomete-data-plane-secret --from-file=settings=files/iomete-data-plane-secret-with-minio.json
 ```
 
 ### 4. Deploy IOMETE Agent
@@ -134,7 +142,7 @@ Rest of the deployment will be handled by the IOMETE control plane through the a
 In the `files/iomete-agent.yaml` you will find the following properties:
 ```yaml
 values:
-  # YOUR_ACCOUNT_ID - required property
+  # !!! The following values are examples. Replace them with your own values.
   iometeAccountId: "acc_i7hP16JyhffRMkVa"
   ingressSettings:
     hosts:
@@ -145,8 +153,8 @@ values:
 
 - `iometeAccountId`: Your IOMETE account id. You can find it on the IOMETE console: https://devapp.iomete.cloud/settings/orgs
 - `ingressSettings`: Data plane connection access point. This can be a load balancer, a node port or DNS that points one of these. 
-  - `hosts`: List of hosts that can be used to connect to the data plane. 
-  - `port`: Port number to connect to the data plane. Can be LB or Node Port's port number.
+  - `hosts`: List of hosts (LB IP, Data Node IP, or DNS) that can be used to connect to the data plane. 
+  - `port`: Port number to connect to the data plane. Can be LB or Node Port's port number. In the Node Port case, just leave it any port number. After installation complete, you can find the port number from the istio-ingress service and redeploy agent.
   - `https`: Whether to use https or not. https=true is highly recommended.
 
 Based on this, IOMETE create a DNS records (`<random_subdomain>.iomete.cloud` - e.g. `yl5p5b61.iomete.cloud`) which points to the given hosts. In https case, IOMETE also deploys necessary certificates to the data plane. No need to configure anything on the data plane side.
@@ -154,6 +162,10 @@ Based on this, IOMETE create a DNS records (`<random_subdomain>.iomete.cloud` - 
 ```shell
 kubectl apply -f files/iomete-agent.yaml
 ```
+
+Go to IOMETE console to see the data plane installation progress: https://devapp.iomete.cloud/settings/orgs
+
+> Note: It could take a few seconds to see the data plane installation progress.
 
 
 
