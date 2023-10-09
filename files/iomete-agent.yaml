@@ -1,0 +1,27 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: iomete-agent
+  namespace: iomete-system
+spec:
+  chart:
+    spec:
+      chart: iom-agent
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: iomete
+        namespace: iomete-system
+      version: 0.3.0
+  install:
+    createNamespace: true
+  interval: 10m
+  releaseName: iomete-agent
+  values:
+    # The following values are examples. Replace them with your own values.
+    iometeAccountId: "acc_i7hP16JyhffRMkVa"
+    ingressSettings:
+      hosts:
+        - 20.106.203.251
+      port: 30537
+      https: true
