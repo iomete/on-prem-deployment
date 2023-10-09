@@ -151,7 +151,7 @@ values:
     https: true
 ```
 
-- `iometeAccountId`: Your IOMETE account id. You can find it on the IOMETE console: https://devapp.iomete.cloud/settings/orgs
+- `iometeAccountId`: Your IOMETE account id. You can create account and copy account id using the IOMETE console: https://devapp.iomete.cloud/settings/orgs
 - `ingressSettings`: Data plane connection access point. This can be a load balancer, a node port or DNS that points one of these. 
   - `hosts`: List of hosts (LB IP, Data Node IP, or DNS) that can be used to connect to the data plane. 
   - `port`: Port number to connect to the data plane. Can be LB or Node Port's port number. In the Node Port case, just leave it any port number. After installation complete, you can find the port number from the istio-ingress service and redeploy agent.
