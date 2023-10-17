@@ -128,7 +128,7 @@ helm upgrade --install -n iomete -f files/mysql-values.yaml mysql bitnami/mysql
 > Note: Make sure `data-plane-values.yaml` is configured correctly.
 
 ```shell
-helm upgrade --install -n iomete iomete-dataplane iomete/iomete-dataplane -f files/data-plane-values.yaml
+helm upgrade --install -n iomete iomete-dataplane iomete/iomete-dataplane -f files/data-plane-values.yaml --version 1.0.5
 ```
 
 
