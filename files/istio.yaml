@@ -11,7 +11,7 @@ spec:
   chart:
     spec:
       chart: iomete-istio
-      version: 2.2.4
+      version: 2.2.5
       sourceRef:
         kind: HelmRepository
         name: iomete
@@ -19,7 +19,7 @@ spec:
     gateway:
       service:
         # Type of service. Set to "None" to disable the service entirely
-        type: NodePort
+        type: LoadBalancer
         ports:
           - name: status-port
             port: 15021
