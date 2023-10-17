@@ -2,7 +2,6 @@ apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: iomete
-  namespace: iomete-system
   annotations:
     reconcile.fluxcd.io/requestedAt: "2023-01-14T04:31"
 spec:

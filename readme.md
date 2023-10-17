@@ -1,4 +1,4 @@
-# IOMETE On-Premise Self-serve Deployment Guide (Private Preview)
+# IOMETE On-Premise Self-serve Deployment Guide
 
 IOMETE can be deployed on-premise in a Kubernetes cluster. This guide will walk you through the steps to deploy IOMETE on-premise.
 
@@ -64,7 +64,20 @@ aws s3api put-object --bucket assets --key spark-history/ --content-length 0
 aws s3 ls
 ```
 
-### 2. Deploy FluxCD
+### 2. Deploy Namespace & Service Account
+
+```shell
+kubectl create namespace iomete
+
+# add iomete helm repo
+helm repo add iomete https://chartmuseum.iomete.com
+helm repo update
+
+helm upgrade --install -n iomete lakehouse-service-account iomete/iomete-lakehouse-service-account
+```
+
+
+### 3. Deploy FluxCD
 
 IOMETE uses FluxCD to deploy and manage the IOMETE components. FluxCD is a GitOps operator for Kubernetes.
 
@@ -77,6 +90,7 @@ helm repo update
 Install FluxCD
 
 ```shell
+# You can skip this if you already have fluxcd installed in your cluster.
 helm upgrade --install --namespace fluxcd \
   --create-namespace fluxcd fluxcd-community/flux2 \
   --version 2.10.0 \
@@ -88,84 +102,35 @@ helm upgrade --install --namespace fluxcd \
 
 And deploy IOMETE repository. This repository contains the IOMETE helm charts.
 ```shell
-kubectl create namespace iomete-system
-kubectl apply -f files/iomete-helm-repo.yaml
+kubectl apply -n iomete -f files/iomete-helm-repo.yaml
 ```
 
-### 3. Deploy data plane secret
 
-Example (see: `files/iomete-data-plane-secret-with-minio.json`):
-```json
-{
-  "cloud": "on-prem",
-  "region": "us-east",
-  "cluster_name": "on-prem-staging",
-  "storage_configuration": {
-    "minio": {
-      "enabled": "true",
-      "host": "http://minio.default.svc.cluster.local:9000",
-      "access_key": "admin",
-      "secret_key": "password",
-      "lakehouse_bucket_name": "lakehouse",
-      "assets_bucket_name": "assets"
-    }
-  }
-}
-```
-
-- `cloud`: To specify the cloud provider. For on-premise deployments, use `local`.
-- `region`: To specify the closest region to the cluster. At this moment only us-east is supported. More regions will be added soon.
-- `cluster_name`: Name of the cluster. Can be any name. It will be shown in the IOMETE UI.
-- `storage_configuration`: To specify the storage configuration. On
-  - `minio`: To specify the Minio configuration. Only one of the storage configurations should be enabled.
-    - `enabled`: To enable/disable Minio.
-    - `host`: Minio endpoint (host:port). For example: `minio.default.svc.cluster.local:9000`
-    - `access_key`: Minio access key.
-    - `secret_key`: Minio secret key.
-    - `lakehouse_bucket_name`: Name of the lakehouse bucket.
-    - `assets_bucket_name`: Name of the assets bucket.
-  - `dell_ecs`: Dell ECS configuration is similar to Minio configuration. See: `files/iomete-data-plane-secret-with-dell-ecs.json`
-
-
-Once you configure the data plane secret json file, deploy it to the cluster.
+### 4. Deploy ISTIO
 
 ```shell
-kubectl create secret -n iomete-system generic iomete-data-plane-secret --from-file=settings=files/iomete-data-plane-secret-with-minio.json
+kubectl apply -n iomete -f istio.yaml
 ```
 
-### 4. Deploy IOMETE Agent
+### 5. Prepare Database
 
-IOMETE agent is the component that keep the connection with IOMETE control plane. 
-Once you deploy the agent, it will connect to the control plane and start listening for the commands. 
-Rest of the deployment will be handled by the IOMETE control plane through the agent.
-
-In the `files/iomete-agent.yaml` you will find the following properties:
-```yaml
-values:
-  # !!! The following values are examples. Replace them with your own values.
-  iometeAccountId: "acc_i7hP16JyhffRMkVa"
-  ingressSettings:
-    hosts:
-      - 20.106.203.251
-    port: 30537
-    https: true
-```
-
-- `iometeAccountId`: Your IOMETE account id. You can create account and copy account id using the IOMETE console: https://devapp.iomete.cloud/settings/orgs
-- `ingressSettings`: Data plane connection access point. This can be a load balancer, a node port or DNS that points one of these. 
-  - `hosts`: List of hosts (LB IP, Data Node IP, or DNS) that can be used to connect to the data plane. 
-  - `port`: Port number to connect to the data plane. Can be LB or Node Port's port number. In the Node Port case, just leave it any port number. After installation complete, you can find the port number from the istio-ingress service and redeploy agent.
-  - `https`: Whether to use https or not. https=true is highly recommended.
-
-Based on this, IOMETE create a DNS records (`<random_subdomain>.iomete.cloud` - e.g. `yl5p5b61.iomete.cloud`) which points to the given hosts. In https case, IOMETE also deploys necessary certificates to the data plane. No need to configure anything on the data plane side.
+Skip this step if you already have a mysql database instance.
 
 ```shell
-kubectl apply -f files/iomete-agent.yaml
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+
+helm upgrade --install -n iomete -f files/mysql-values.yaml mysql bitnami/mysql
 ```
 
-Go to IOMETE console to see the data plane installation progress: https://devapp.iomete.cloud/settings/orgs
+### 6. Deploy IOMETE Data Plane
 
-> Note: It could take a few seconds to see the data plane installation progress.
+> Note: Make sure `data-plane-values.yaml` is configured correctly.
+
+```shell
+helm upgrade --install -n iomete iomete-dataplane iomete/iomete-dataplane -f files/data-plane-values.yaml
+```
+
 
 
 
