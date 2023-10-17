@@ -109,7 +109,7 @@ kubectl apply -n iomete -f files/iomete-helm-repo.yaml
 ### 4. Deploy ISTIO
 
 ```shell
-kubectl apply -n iomete -f istio.yaml
+kubectl apply -n iomete -f files/istio.yaml
 ```
 
 ### 5. Prepare Database
