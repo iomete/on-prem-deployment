@@ -1,3 +1,7 @@
+cloud:
+  provider: on-prem
+  region: us-east
+
 dataPlane:
   adminUser:
     username: "admin"
@@ -16,27 +20,32 @@ spark:
   logLevel: warn
 
 jupyter:
-  authToken: "1234"
+  authToken: "eg_AIm8b2G4BOJ79da6"
 
 keycloak:
+  enabled: true
   adminUser: "kc_admin"
   adminPassword: "Admin_123"
   # if adminPasswordSecret is set, the password will be read from the secret
   adminPasswordSecret: {}
     # name: secret-name
     # key: password
+  endpoint: "http://keycloak-http/auth"
 
 storage:
-  lakehouse_bucket_name: "lakehouse"
-  assets_bucket_name: "assets"
-  settings:
-    type: "minio"
+  catalogs:
+    spark_catalog:
+      bucketName: "lakehouse"
+  assetsBucketName: "assets"
+  # minio, dell_ecs, aws_s3, gcs, azure_gen1, azure_gen2
+  type: "minio"
+  minioSettings:
     endpoint: "http://minio.default.svc.cluster.local:9000"
     accessKey: "admin"
     secretKey: "password"
     # if secretKeySecret is set, the secretKey will be read from the secret
     secretKeySecret: {}
-      # name: secret-name
+      # name: secretName
       # key: secretKey
     additionalConfigOverrides: {}
       # core-site-xml-overrides: |
@@ -69,3 +78,28 @@ clusterDomain: cluster.local
 
 ranger:
   enabled: true
+
+# Enabled if you have multiple data-planes, and you need control-plane for SSO and other features
+controlPlane:
+  enabled: false
+  
+  # You can use the same database as data-plane, or use separate database
+  database: {}
+    # host: "mysql"
+    # port: "3306"
+    # user: "iomete_user"
+    # password: "iomete_pass"
+    # # if passwordSecret is set, the password will be read from the secret
+    # passwordSecret: {}
+    #   # name: byo-db-creds
+    #   # key: password
+    # prefix: "iomete_" # all IOMETE databases should be prefixed with this. See database init script.
+    #
+    # # Provide database admin credentials to create the IOMETE databases, otherwise please run the database init script manually.
+    # adminCredentials: {}
+    #   # user: "root"
+    #   # password: "onXB8UbEqYzkQFgbXe8F#C5ckmyKix&"
+    #   # # if passwordSecret is set, the password will be read from the secret
+    #   # passwordSecret: {}
+    #   #   # name: byo-db-creds
+    #   #   # key: password
