@@ -131,7 +131,42 @@ helm upgrade --install -n iomete -f files/mysql-values.yaml mysql bitnami/mysql
 helm upgrade --install -n iomete iomete-dataplane iomete/iomete-dataplane -f files/data-plane-values.yaml --version 1.4.0
 ```
 
+### 7. Control Plane Configuration
+
+If you have enabled the `controlPlane.enabled` in the `data-plane-values.yaml` file, you need to manually configure the control plane. Otherwise, skip this step.  
+  
+After installing data-plane instances and configuring DNS, connect to your mysql instance and insert the following record in the `iomete_control_plane_db` database. You should insert a record for each data-plane instance. For example if you have 2 data-plane instances, you should insert 2 records.
+
+```sql
+insert into iomete_control_plane_db.data_plane (id, name, cloud, region, endpoint) 
+values ('1', 'data-plane-name', 'on-prem', 'us-east-1', 'https://data-plane-dns.company.com');
+
+insert into iomete_control_plane_db.data_plane (id, name, cloud, region, endpoint) 
+values ('2', 'data-plane-2-name', 'on-prem', 'us-east-1', 'https://data-plane-2-dns.company.com');
+```
+
+| Column   | Description                     |
+| -------- | ------------------------------- |
+| id       | Unique ID                       |
+| name     | Data Plane display name         |
+| cloud    | Cloud provider                  |
+| region   | Region, `us-east-1` for on-prem |
+| endpoint | Data-plane host                 |
 
 
+### 8. DNS Configuration
 
+To configure the DNS for your data-plane instance, you need to retrieve the external IP address. 
+This IP address can be from a load balancer or a node port, depending on your setup. This external IP is associated with the Istio ingress in the `istio-system` namespace.  
 
+Follow these steps:  
+
+1. To get the external IP address, use the following `kubectl` command:
+    
+    ```shell
+    kubectl get svc istio-ingress -n istio-system
+    ```
+    
+    Look for the `EXTERNAL-IP` field in the output. This is the IP address you'll use for DNS configuration.
+
+2. Use the retrieved external IP address to configure your DNS settings. This process will vary depending on your DNS provider or your internal DNS configuration system.
