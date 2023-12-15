@@ -170,3 +170,51 @@ Follow these steps:
     Look for the `EXTERNAL-IP` field in the output. This is the IP address you'll use for DNS configuration.
 
 2. Use the retrieved external IP address to configure your DNS settings. This process will vary depending on your DNS provider or your internal DNS configuration system.
+
+
+## Multi-Catalog Configuration
+
+To integrate additional Spark catalogs, append the following entries in the `data-plane-values.yaml` file, under the `storage → catalogs` section:
+
+```yaml
+storage:
+  catalogs:
+		# This is the default system catalog. Please do not modify it.
+    spark_catalog:
+      bucketName: lakehouse
+		# Add the following lines for a new catalog
+		new_catalog:
+			bucketName: lakehouse_new_catalog
+```
+
+This configuration allows the use of the same storage credentials but targets a different lakehouse bucket for data storage.
+
+If you need to use distinct storage credentials or connect to a different S3-compatible storage instance, specify `credentials` as shown below:
+
+```yaml
+storage:
+  catalogs:
+		# This is the default system catalog. Please do not modify it.
+    spark_catalog:
+      bucketName: lakehouse
+		# Add the following lines for a new catalog
+		new_catalog:
+			bucketName: lakehouse_new_catalog
+      credentials:
+        endpoint: "..."
+        region: "us-east-1"
+        accessKey: "..."
+        secretKey: "..."
+        # Uncomment and use the following lines if you need to use secret keys
+        # secretKeySecret:
+        #   name: secret-name
+        #   key: secret-key
+```
+
+By default, the new catalog remains invisible in the SQL Explorer if it contains no tables. To make the catalog visible, create a table using the following SQL command:
+
+```sql
+create table new_catalog.default.sample_table(data string);
+```
+
+Specify the catalog name, database name, and table name manually. After refreshing the SQL Explorer, the `new_catalog` should appear alongside the default `spark_catalog`.
