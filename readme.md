@@ -197,7 +197,7 @@ storage:
     # This is the default system catalog. Please do not modify it.
     spark_catalog:
       bucketName: lakehouse
-		# Add the following lines for a new catalog
+    # Add the following lines for a new catalog
     new_catalog:
       bucketName: lakehouse_new_catalog
       credentials:
