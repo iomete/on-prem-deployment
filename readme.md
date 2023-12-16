@@ -179,12 +179,12 @@ To integrate additional Spark catalogs, append the following entries in the `dat
 ```yaml
 storage:
   catalogs:
-		# This is the default system catalog. Please do not modify it.
+    # This is the default system catalog. Please do not modify it.
     spark_catalog:
       bucketName: lakehouse
-		# Add the following lines for a new catalog
-		new_catalog:
-			bucketName: lakehouse_new_catalog
+    # Add the following lines for a new catalog
+    new_catalog:
+      bucketName: lakehouse_new_catalog
 ```
 
 This configuration allows the use of the same storage credentials but targets a different lakehouse bucket for data storage.
@@ -194,12 +194,12 @@ If you need to use distinct storage credentials or connect to a different S3-com
 ```yaml
 storage:
   catalogs:
-		# This is the default system catalog. Please do not modify it.
+    # This is the default system catalog. Please do not modify it.
     spark_catalog:
       bucketName: lakehouse
 		# Add the following lines for a new catalog
-		new_catalog:
-			bucketName: lakehouse_new_catalog
+    new_catalog:
+      bucketName: lakehouse_new_catalog
       credentials:
         endpoint: "..."
         region: "us-east-1"
