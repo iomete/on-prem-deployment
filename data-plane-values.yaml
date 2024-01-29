@@ -1,14 +1,10 @@
-cloud:
-  provider: on-prem
-  region: us-east
-
-dataPlane:
-  adminUser:
-    username: "admin"
-    email: "admin@example.com" # required for password reset
-    firstName: Admin
-    lastName: Admin
-    temporaryPassword: "admin" # you will be prompted to change this on first login
+# data plane admin user
+adminUser:
+  username: "admin"
+  email: "admin@example.com"
+  firstName: Admin
+  lastName: Admin
+  temporaryPassword: "admin" # you will be prompted to change this on first login
 
 istioGateway:
   # if you want to enable TLS, set the tlsCertSecretName
@@ -29,7 +25,7 @@ keycloak:
   # if adminPasswordSecret is set, the password will be read from the secret
   adminPasswordSecret: {}
     # name: secret-name
-    # key: password
+  # key: password
   endpoint: "http://keycloak-http/auth"
 
 storage:
@@ -46,38 +42,47 @@ storage:
     # if secretKeySecret is set, the secretKey will be read from the secret
     secretKeySecret: {}
       # name: secretName
-      # key: secretKey
+    # key: secretKey
     additionalConfigOverrides: {}
       # core-site-xml-overrides: |
-        # fs.s3a.path.style.access: true
-        # fs.s3a.connection.ssl.enabled: false
+      # fs.s3a.path.style.access: true
+    # fs.s3a.connection.ssl.enabled: false
 
 database:
-  host: "mysql"
-  port: "3306"
+  type: postgresql
+  host: "postgresql"
+  port: "5432"
   user: "iomete_user"
   password: "iomete_pass"
   # if passwordSecret is set, the password will be read from the secret
   passwordSecret: {}
     # name: byo-db-creds
-    # key: password
+  # key: password
   prefix: "iomete_" # all IOMETE databases should be prefixed with this. See database init script.
 
   # Provide database admin credentials to create the IOMETE databases,
   # otherwise please run the database init script manually. See: files/database-init.sql
   adminCredentials:
-    user: "root"
+    user: "postgres"
     password: "onXB8UbEqYzkQFgbXe8F#C5ckmyKix&"
     # if passwordSecret is set, the password will be read from the secret
     passwordSecret: {}
       # name: byo-db-creds
-      # key: password
+    # key: password
 
 
 clusterDomain: cluster.local
 
-ranger:
-  enabled: true
+modules:
+  security: true
+  authorization: true
+  catalog: false
+  monitoring: false
+
+docker:
+  repo: iomete
+#  imagePullSecrets:
+#    - name: iomete-image-pull-secret
 
 # Enabled if you have multiple data-planes, and you need control-plane for SSO and other features
 controlPlane:
@@ -102,4 +107,4 @@ controlPlane:
     #   # # if passwordSecret is set, the password will be read from the secret
     #   # passwordSecret: {}
     #   #   # name: byo-db-creds
-    #   #   # key: password
+  #   #   # key: password
