@@ -133,7 +133,7 @@ Wait until the istio-ingress gateway is ready.
 helm repo add iomete https://chartmuseum.iomete.com
 helm repo update
 
-helm upgrade --install -n iomete-system iomete-dataplane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 1.7.0
+helm upgrade --install -n iomete-system iomete-dataplane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 1.7.1
 ```
 
 ### 8. Control Plane Configuration

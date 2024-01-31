@@ -87,24 +87,3 @@ docker:
 # Enabled if you have multiple data-planes, and you need control-plane for SSO and other features
 controlPlane:
   enabled: false
-  
-  # You can use the same database as data-plane, or use separate database
-  database: {}
-    # host: "mysql"
-    # port: "3306"
-    # user: "iomete_user"
-    # password: "iomete_pass"
-    # # if passwordSecret is set, the password will be read from the secret
-    # passwordSecret: {}
-    #   # name: byo-db-creds
-    #   # key: password
-    # prefix: "iomete_" # all IOMETE databases should be prefixed with this. See database init script.
-    #
-    # # Provide database admin credentials to create the IOMETE databases, otherwise please run the database init script manually.
-    # adminCredentials: {}
-    #   # user: "root"
-    #   # password: "onXB8UbEqYzkQFgbXe8F#C5ckmyKix&"
-    #   # # if passwordSecret is set, the password will be read from the secret
-    #   # passwordSecret: {}
-    #   #   # name: byo-db-creds
-  #   #   # key: password

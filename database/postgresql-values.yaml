@@ -8,6 +8,8 @@ primary:
     accessModes:
       - ReadWriteOnce
     size: 8Gi
+  extendedConfiguration: |
+    max_connections=500
 
 backup:
   enabled: false
