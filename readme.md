@@ -57,13 +57,14 @@ aws s3 mb s3://assets
 aws s3 ls
 ```
 
-### 2. Create Namespace
 
+### Create iomete namespace
 ```shell
 kubectl create namespace iomete-system
 ```
 
-### 3. Prepare Database
+---
+### Prepare Database
 
 IOMETE supports PostgreSQL and MySQL as backend databases. You can use the following helm charts to deploy test database deployments.
 
@@ -78,65 +79,126 @@ helm upgrade --install -n iomete-system -f database/postgresql-values.yaml postg
 
 The database will be ready in about 30-40 seconds.
 
-### 4. Deploy Lakehouse Service Account
 
+---
+### Deploy ISTIO
+
+Add istio helm repository:
 ```shell
-# add iomete helm repo
-helm repo add iomete https://chartmuseum.iomete.com
+helm repo add istio https://istio-release.storage.googleapis.com/charts
 helm repo update
-
-helm upgrade --install -n iomete-system lakehouse-service-account iomete/iomete-lakehouse-service-account --version 1.7.0
-
-# or if you want to add image pull secret. Please replace `iomete-image-pull-secret` with your image pull secret name.
-helm upgrade --install -n iomete-system lakehouse-service-account iomete/iomete-lakehouse-service-account --version 1.7.0 --set "imagePullSecrets[0].name=iomete-image-pull-secret"
 ```
 
+Deploy istio helm charts:
+```shell
+helm upgrade --install -n iomete-system  base istio/base --version 1.17.2 --set global.istioNamespace=iomete-system
+helm upgrade --install -n iomete-system istiod istio/istiod --version 1.17.2 --set global.istioNamespace=iomete-system --set global.oneNamespace=true
+helm upgrade --install -n iomete-system istio-ingress istio/gateway --version 1.17.2
+```
 
-### 5. Deploy FluxCD
+#### Split CRD deployment:
+
+```shell
+# Deploy only CRDs
+helm pull istio/base --version 1.17.2 --untar
+kubectl apply -f base/crds
+
+# Deploy without CRDs
+helm upgrade --install -n iomete-system --skip-crds  base istio/base --version 1.17.2 --set global.istioNamespace=iomete-system
+
+helm upgrade --install -n iomete-system istiod istio/istiod --version 1.17.2 --set global.istioNamespace=iomete-system --set global.oneNamespace=true
+helm upgrade --install -n iomete-system istio-ingress istio/gateway --version 1.17.2
+```
+
+----
+### Deploy FluxCD
 
 IOMETE utilizes FluxCD to deploy and manage IOMETE components. FluxCD is a GitOps operator for Kubernetes.
 
-Add `fluxcd` helm repo:
+Add fluxcd helm repo:
 ```shell
 helm repo add fluxcd-community https://fluxcd-community.github.io/helm-charts
 helm repo update
 ```
 
-Install FluxCD:
-
+Deploy FluxCD:
 ```shell
-# You can skip this if you already have fluxcd installed in your cluster.
-helm upgrade --install --namespace fluxcd \
-  --create-namespace fluxcd fluxcd-community/flux2 \
+helm upgrade --install -n iomete-system fluxcd fluxcd-community/flux2 \
   --version 2.10.0 \
   --set imageAutomationController.create=false \
   --set imageReflectionController.create=false \
   --set kustomizeController.create=false \
-  --set notificationController.create=false      
+  --set notificationController.create=false \
+  --set policies.create=false \
+  --set watchAllNamespaces=false  
 ```
 
-
-### 6. Deploy ISTIO
+#### Split CRD deployment:
 
 ```shell
-kubectl create namespace istio-system
-kubectl apply -n istio-system -f istio.yaml
+# Deploy only CRDs
+kubectl apply -f "fluxcd/crds-2.10.0"
+
+# Deploy without CRDs
+helm upgrade --install -n iomete-system fluxcd fluxcd-community/flux2 \
+  --version 2.10.0 \
+  --set imageAutomationController.create=false \
+  --set imageReflectionController.create=false \
+  --set kustomizeController.create=false \
+  --set notificationController.create=false \
+  --set policies.create=false \
+  --set installCRDs=false \
+  --set watchAllNamespaces=false
 ```
 
-Wait until the istio-ingress gateway is ready. 
+---
+### Deploy IOMETE Data Plane Base
 
-### 7. Deploy IOMETE Data Plane
+IOMETE Data Plane Base is a base deployment for IOMETE Data Plane. It includes CRDs, ClusterRole, Lakehouse Service Account, and Roles.
+
+Add iomete helm repo:
+```shell
+# add iomete helm repo
+helm repo add iomete https://chartmuseum.iomete.com
+helm repo update
+```
+
+
+Deploy IOMETE Data Plane Base:
+
+```shell
+helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-enterprise-base --version 1.7.2
+```
+
+#### Split CRD deployment:
+
+```shell
+# Deploy only CRDs
+helm pull iomete/iomete-data-plane-enterprise-base --version 1.7.2 --untar
+kubectl apply -f iomete-data-plane-enterprise-base/crds
+
+# Deploy without CRDs
+helm upgrade --install --skip-crds -n iomete-system data-plane-base iomete/iomete-data-plane-enterprise-base --version 1.7.2
+```
+
+Additional values to configure:
+```shell
+--set rbac.createClusterRole=false # to skip creating cluster role. Default is true
+--set "imagePullSecrets[0].name=<iomete-image-pull-secret-name>" # to provide image pull secret
+```
+
+
+---
+### Deploy IOMETE Data Plane
 
 > Note: Make sure `data-plane-values.yaml` is correctly configured.
 
 ```shell
-helm repo add iomete https://chartmuseum.iomete.com
-helm repo update
-
-helm upgrade --install -n iomete-system iomete-dataplane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 1.7.1
+helm upgrade --install -n iomete-system iomete-dataplane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 1.7.2
 ```
 
-### 8. Control Plane Configuration
+---
+### Control Plane Configuration
 
 If you've enabled `controlPlane.enabled` in the `data-plane-values.yaml` file, you'll need to manually configure the control plane. Otherwise, skip this step.
 
@@ -159,7 +221,7 @@ values ('2', 'data-plane-2-name', 'on-prem', 'us-east-1', 'https://data-plane-2-
 | endpoint | Data-plane host                  |
 
 
-### 9. DNS Configuration
+### DNS Configuration
 
 To configure DNS for your data plane instance, retrieve the external IP address. Depending on your setup, this IP address could be from a load balancer or a node port. This external IP is associated with the Istio ingress in the `istio-system` namespace.
 

@@ -7,6 +7,7 @@ adminUser:
   temporaryPassword: "admin" # you will be prompted to change this on first login
 
 istioGateway:
+  namespace: iomete-system
   # if you want to enable TLS, set the tlsCertSecretName
   # name of the secret with certificates. Secret should contain 2 files: tls.crt and tls.key
   # if redirectHttpToHttps is set to true, this secret must be provided to handle https traffic
@@ -24,7 +25,7 @@ keycloak:
   adminPassword: "Admin_123"
   # if adminPasswordSecret is set, the password will be read from the secret
   adminPasswordSecret: {}
-    # name: secret-name
+  # name: secret-name
   # key: password
   endpoint: "http://keycloak-http/auth"
 
@@ -41,11 +42,11 @@ storage:
     secretKey: "password"
     # if secretKeySecret is set, the secretKey will be read from the secret
     secretKeySecret: {}
-      # name: secretName
+    # name: secretName
     # key: secretKey
     additionalConfigOverrides: {}
-      # core-site-xml-overrides: |
-      # fs.s3a.path.style.access: true
+    # core-site-xml-overrides: |
+    # fs.s3a.path.style.access: true
     # fs.s3a.connection.ssl.enabled: false
 
 database:
@@ -56,7 +57,7 @@ database:
   password: "iomete_pass"
   # if passwordSecret is set, the password will be read from the secret
   passwordSecret: {}
-    # name: byo-db-creds
+  # name: byo-db-creds
   # key: password
   prefix: "iomete_" # all IOMETE databases should be prefixed with this. See database init script.
 
@@ -67,23 +68,37 @@ database:
     password: "onXB8UbEqYzkQFgbXe8F#C5ckmyKix&"
     # if passwordSecret is set, the password will be read from the secret
     passwordSecret: {}
-      # name: byo-db-creds
+    # name: byo-db-creds
     # key: password
 
 
 clusterDomain: cluster.local
 
-modules:
-  security: true
-  authorization: true
-  catalog: false
-  monitoring: false
-
 docker:
   repo: iomete
-#  imagePullSecrets:
-#    - name: iomete-image-pull-secret
+  pullPolicy: Always
+  appVersion: 1.7.1
+  sparkVersion: 3.5.0
+  imagePullSecrets: []
+  # - name: your-image-pull-secret
 
 # Enabled if you have multiple data-planes, and you need control-plane for SSO and other features
 controlPlane:
   enabled: false
+
+dataCatalog:
+  enabled: false
+
+# Data Security
+ranger:
+  enabled: false
+
+# Enable advanced RBAC (Role Based Access Control) features in console.
+rbac:
+  enabled: false
+
+# Set `true` if prometheus-stack is installed in the cluster
+# You can install it with a separate helm chart
+# Read more: ...
+monitoring:
+  installed: false
