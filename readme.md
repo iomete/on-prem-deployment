@@ -92,7 +92,7 @@ helm repo update
 Deploy istio helm charts:
 ```shell
 helm upgrade --install -n iomete-system  base istio/base --version 1.17.2 --set global.istioNamespace=iomete-system
-helm upgrade --install -n iomete-system istiod istio/istiod --version 1.17.2 --set global.istioNamespace=iomete-system --set global.oneNamespace=true
+helm upgrade --install -n iomete-system istiod istio/istiod --version 1.17.2 --set global.istioNamespace=iomete-system --set global.oneNamespace=true -f istio-mesh-config-values.yaml
 helm upgrade --install -n iomete-system istio-ingress istio/gateway --version 1.17.2
 ```
 
