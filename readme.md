@@ -26,59 +26,31 @@ The IOMETE controller requires 2 CPU and 4GB of RAM. The Spark driver and execut
 > Note: Make sure `kubectl` is configured to point to the correct cluster (context).
 > Note: Clone this repo and change the current directory to this directory.
 
-### 1. Prepare Buckets in Object Storage
+---
+### 1. Deploy Minio (Optional)
 
-Optionally, you can deploy a test Minio deployment
-```shell
-kubectl apply -f minio/minio-test-deployment.yaml
-```
+[Deploy Minio](minio/minio-deployment.md) if you don't have an object storage system. Minio is an open-source object storage system that can be deployed on-premises.
 
-Create two dedicated buckets in your object storage – one for the lakehouse and another for assets.
-
-- Lakehouse bucket: This bucket will store the data lakehouse (data lake).
-- Assets bucket: This bucket will store the assets (logs, spark history data, SQL result cache, etc.)
-
-Example for Minio:
-
-```shell
-# export access key and secret key
-export AWS_ACCESS_KEY_ID=admin
-export AWS_SECRET_ACCESS_KEY=password
-export AWS_REGION=us-east-1
-
-# override aws cli endpoint to point to minio
-alias aws='aws --endpoint-url http://localhost:9000'
-
-# create s3 bucket
-aws s3 mb s3://lakehouse
-aws s3 mb s3://assets
-
-# verify buckets
-aws s3 ls
-```
-
-
-### Create iomete namespace
+---
+### 2. Create iomete namespace
 ```shell
 kubectl create namespace iomete-system
+kubectl label namespace iomete-system istio-injection=enabled
 ```
 
 ---
 ### Prepare Database
 
-IOMETE supports PostgreSQL and MySQL as backend databases. You can use the following helm charts to deploy test database deployments.
+IOMETE supports PostgreSQL as backend database. Following the instructions below, you will deploy a PostgreSQL database using Helm from the Bitnami repository.
 
 ```shell
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 
 helm upgrade --install -n iomete-system -f database/postgresql-values.yaml postgresql bitnami/postgresql
-# or for MySQL
-# helm upgrade --install -n iomete-system -f database/mysql-values.yaml mysql bitnami/mysql
 ```
 
-The database will be ready in about 30-40 seconds.
-
+> _Info: The database will be ready in about 30-40 seconds._
 
 ---
 ### Deploy ISTIO
@@ -92,23 +64,12 @@ helm repo update
 Deploy istio helm charts:
 ```shell
 helm upgrade --install -n iomete-system  base istio/base --version 1.17.2 --set global.istioNamespace=iomete-system
-helm upgrade --install -n iomete-system istiod istio/istiod --version 1.17.2 --set global.istioNamespace=iomete-system --set global.oneNamespace=true -f istio-mesh-config-values.yaml
+# In `istio/istio-mesh-config-values.yaml`: replace `iomete-system` with the namespace where IOMETE is installed if it is different
+helm upgrade --install -n iomete-system istiod istio/istiod --version 1.17.2 --set global.istioNamespace=iomete-system --set global.oneNamespace=true -f istio/istio-mesh-config-values.yaml
 helm upgrade --install -n iomete-system istio-ingress istio/gateway --version 1.17.2
 ```
 
-#### Split CRD deployment:
-
-```shell
-# Deploy only CRDs
-helm pull istio/base --version 1.17.2 --untar
-kubectl apply -f base/crds
-
-# Deploy without CRDs
-helm upgrade --install -n iomete-system --skip-crds  base istio/base --version 1.17.2 --set global.istioNamespace=iomete-system
-
-helm upgrade --install -n iomete-system istiod istio/istiod --version 1.17.2 --set global.istioNamespace=iomete-system --set global.oneNamespace=true
-helm upgrade --install -n iomete-system istio-ingress istio/gateway --version 1.17.2
-```
+See [Istio Deployment](istio/istio-deployment.md) for other deployment options.
 
 ----
 ### Deploy FluxCD
@@ -123,33 +84,16 @@ helm repo update
 
 Deploy FluxCD:
 ```shell
-helm upgrade --install -n iomete-system fluxcd fluxcd-community/flux2 \
+kubectl create namespace fluxcd
+helm upgrade --install -n fluxcd fluxcd fluxcd-community/flux2 \
   --version 2.10.0 \
   --set imageAutomationController.create=false \
   --set imageReflectionController.create=false \
   --set kustomizeController.create=false \
-  --set notificationController.create=false \
-  --set policies.create=false \
-  --set watchAllNamespaces=false  
+  --set notificationController.create=false  
 ```
 
-#### Split CRD deployment:
-
-```shell
-# Deploy only CRDs
-kubectl apply -f "fluxcd/crds-2.10.0"
-
-# Deploy without CRDs
-helm upgrade --install -n iomete-system fluxcd fluxcd-community/flux2 \
-  --version 2.10.0 \
-  --set imageAutomationController.create=false \
-  --set imageReflectionController.create=false \
-  --set kustomizeController.create=false \
-  --set notificationController.create=false \
-  --set policies.create=false \
-  --set installCRDs=false \
-  --set watchAllNamespaces=false
-```
+See [FluxCD Deployment](fluxcd/fluxcd-deployment.md) for other deployment options.
 
 ---
 ### Deploy IOMETE Data Plane Base
@@ -167,25 +111,10 @@ helm repo update
 Deploy IOMETE Data Plane Base:
 
 ```shell
-helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-enterprise-base --version 1.7.2
+helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-enterprise-base --version 1.8.0
 ```
 
-#### Split CRD deployment:
-
-```shell
-# Deploy only CRDs
-helm pull iomete/iomete-data-plane-enterprise-base --version 1.7.2 --untar
-kubectl apply -f iomete-data-plane-enterprise-base/crds
-
-# Deploy without CRDs
-helm upgrade --install --skip-crds -n iomete-system data-plane-base iomete/iomete-data-plane-enterprise-base --version 1.7.2
-```
-
-Additional values to configure:
-```shell
---set rbac.createClusterRole=false # to skip creating cluster role. Default is true
---set "imagePullSecrets[0].name=<iomete-image-pull-secret-name>" # to provide image pull secret
-```
+See [IOMETE Data-plane Deployment](data-plane-deployment.md) for other deployment options.
 
 
 ---
@@ -194,32 +123,8 @@ Additional values to configure:
 > Note: Make sure `data-plane-values.yaml` is correctly configured.
 
 ```shell
-helm upgrade --install -n iomete-system iomete-dataplane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 1.7.2
+helm upgrade --install -n iomete-system iomete-dataplane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 1.8.0
 ```
-
----
-### Control Plane Configuration
-
-If you've enabled `controlPlane.enabled` in the `data-plane-values.yaml` file, you'll need to manually configure the control plane. Otherwise, skip this step.
-
-After installing data-plane instances and configuring DNS, connect to your MySQL instance and insert the following record in the `iomete_control_plane_db` database. Insert a record for each data-plane instance. For example, if you have 2 data-plane instances, insert 2 records.
-
-```sql
-insert into iomete_control_plane_db.data_plane (id, name, cloud, region, endpoint) 
-values ('1', 'data-plane-name', 'on-prem', 'us-east-1', 'https://data-plane-dns.company.com');
-
-insert into iomete_control_plane_db.data_plane (id, name, cloud, region, endpoint) 
-values ('2', 'data-plane-2-name', 'on-prem', 'us-east-1', 'https://data-plane-2-dns.company.com');
-```
-
-| Column   | Description                      |
-| -------- |----------------------------------|
-| id       | Unique identifier                |
-| name     | Data Plane display name          |
-| cloud    | Cloud provider                   |
-| region   | Region (`us-east-1` for on-prem) |
-| endpoint | Data-plane host                  |
-
 
 ### DNS Configuration
 

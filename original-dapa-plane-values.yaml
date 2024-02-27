@@ -1,0 +1,121 @@
+# Name for the data plane.
+# If you have multiple data-planes, provide a distinguish name for each.
+name: iomete-data-plane
+
+# Data Plane admin user
+adminUser:
+  username: "admin"
+  email: "admin@example.com"
+  firstName: Admin
+  lastName: Admin
+  temporaryPassword: "admin" # you will be prompted to change this on first login
+
+database:
+  # Currently only postgresql supported. For mysql please contact support.
+  type: postgresql
+  host: "postgresql"
+  port: "5432"
+  user: "iomete_user"
+  password: "iomete_pass"
+  # if passwordSecret is set, the password will be read from the secret
+  passwordSecret: {}
+    # name: byo-db-creds
+    # key: password
+  prefix: "iomete_" # all IOMETE databases will be prefixed with this. See database init script.
+  # Provide database admin credentials to create the IOMETE databases, otherwise please run the database init script manually.
+  adminCredentials: {}
+    # user: "postgres"
+    # password: "password"
+    # # if passwordSecret is set, the password will be read from the secret
+    # passwordSecret: {}
+    #   # name: byo-db-creds
+    #   # key: password
+  ssl:
+    enabled: false # Enabling this will require javaTrustStore to be enabled and configured properly
+    mode: "disable" # disable, verify-full
+  
+istioGateway:
+  # if you want to enable TLS, set the tlsCertSecretName
+  # name of the secret with certificates. Secret should contain 2 files: tls.crt and tls.key
+  # if redirectHttpToHttps is set to true, this secret must be provided to handle https traffic
+  tlsCertSecretName: ""
+  # If you have multiple data-planes, provide IP or DNS name, so istio-ingress can route traffic to the correct data-plane
+  host: "*"
+
+spark:
+  logLevel: warn
+
+keycloak:
+  enabled: true
+  adminUser: "kc_admin"
+  adminPassword: "Admin_123"
+  # if adminPasswordSecret is set, the password will be read from the secret
+  adminPasswordSecret: {}
+    # name: secret-name
+    # key: password
+  # Change this if enabled is set to false, or controlPlane is enabled
+  endpoint: "http://keycloak-http/auth"
+
+storage:
+  lakehouseBucketName: "lakehouse"
+  assetsBucketName: "assets"
+  # minio, dell_ecs, aws_s3, gcs, azure_gen1
+  type: "minio"
+  dellEcsSettings: {}
+  minioSettings: {}
+    # endpoint: "http://minio.default.svc.cluster.local:9000"
+    # accessKey: "admin"
+    # secretKey: "password"
+    # # if secretKeySecret is set, the secretKey will be read from the secret
+    # secretKeySecret: {}
+    #   # name: secret-name
+    #   # key: secret-key
+  azureSettings: {}
+    # storageAccountName: ""
+    # storageAccountKey: ""
+
+clusterDomain: cluster.local
+
+helmRepo:
+  url: "https://chartmuseum.iomete.com" # Change this to your Helm repo URL
+  type: "default" # Use "default" for traditional Helm repos or "oci" for OCI-based repos
+  secretRef: "" # Name of the Kubernetes secret for repo access; leave empty if not needed
+
+docker:
+  repo: iomete
+  pullPolicy: Always
+  appVersion: 1.8.0
+  sparkVersion: 3.5.1
+  imagePullSecrets: []
+  # - name: your-image-pull-secret
+  
+dataCatalog:
+  enabled: true
+  # Allocated memory for Typesense search engine
+  storageSize: 1Gi
+
+# Data Security Module
+ranger:
+  enabled: true
+
+# Enable OPA(Open Policy Agent) for advanced RBAC (Role Based Access Control) features in Console.
+opa:
+  enabled: true
+  
+jupyterGateway:
+  authToken: "changeit"
+  kernels:
+    - pyspark_kernel
+    - spark_scala_kernel
+
+# Set `true` if prometheus-stack is installed in the cluster
+# You can install it with a separate helm chart
+monitoring:
+  installed: false
+
+javaTrustStore:
+  enabled: false
+  secretName: java-truststore # Name of the secret with the truststore.jks file
+  fileName: truststore.jks
+  password: changeit
+  mountPath: /etc/ssl/certs

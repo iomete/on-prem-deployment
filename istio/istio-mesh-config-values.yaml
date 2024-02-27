@@ -1,0 +1,9 @@
+# replace `iomete-system` with the namespace where IOMETE is installed if it is different
+meshConfig:
+  extensionProviders:
+    - name: "iomete-authz-service.iomete-system"
+      envoyExtAuthzHttp:
+        service: "iom-core.iomete-system.svc.cluster.local"
+        port: 80
+        includeRequestHeadersInCheck: ["connect-cluster", "user-id", "api-token" ]
+        pathPrefix: "/api/v1/iam/connect/authz"

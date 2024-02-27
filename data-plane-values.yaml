@@ -1,53 +1,6 @@
-# data plane admin user
-adminUser:
-  username: "admin"
-  email: "admin@example.com"
-  firstName: Admin
-  lastName: Admin
-  temporaryPassword: "admin" # you will be prompted to change this on first login
-
-istioGateway:
-  namespace: iomete-system
-  # if you want to enable TLS, set the tlsCertSecretName
-  # name of the secret with certificates. Secret should contain 2 files: tls.crt and tls.key
-  # if redirectHttpToHttps is set to true, this secret must be provided to handle https traffic
-  tlsCertSecretName: ""
-
-spark:
-  logLevel: warn
-
-jupyter:
-  authToken: "eg_AIm8b2G4BOJ79da6"
-
-keycloak:
-  enabled: true
-  adminUser: "kc_admin"
-  adminPassword: "Admin_123"
-  # if adminPasswordSecret is set, the password will be read from the secret
-  adminPasswordSecret: {}
-  # name: secret-name
-  # key: password
-  endpoint: "http://keycloak-http/auth"
-
-storage:
-  catalogs:
-    spark_catalog:
-      bucketName: "lakehouse"
-  assetsBucketName: "assets"
-  # minio, dell_ecs, aws_s3, gcs, azure_gen1, azure_gen2
-  type: "minio"
-  minioSettings:
-    endpoint: "http://minio.default.svc.cluster.local:9000"
-    accessKey: "admin"
-    secretKey: "password"
-    # if secretKeySecret is set, the secretKey will be read from the secret
-    secretKeySecret: {}
-    # name: secretName
-    # key: secretKey
-    additionalConfigOverrides: {}
-    # core-site-xml-overrides: |
-    # fs.s3a.path.style.access: true
-    # fs.s3a.connection.ssl.enabled: false
+# Name for the data plane.
+# If you have multiple data-planes, provide a distinguish name for each.
+name: iomete-data-plane1
 
 database:
   type: postgresql
@@ -55,50 +8,63 @@ database:
   port: "5432"
   user: "iomete_user"
   password: "iomete_pass"
-  # if passwordSecret is set, the password will be read from the secret
-  passwordSecret: {}
-  # name: byo-db-creds
-  # key: password
   prefix: "iomete_" # all IOMETE databases should be prefixed with this. See database init script.
-
-  # Provide database admin credentials to create the IOMETE databases,
-  # otherwise please run the database init script manually. See: files/database-init.sql
+  defaultSchema: public
   adminCredentials:
     user: "postgres"
     password: "onXB8UbEqYzkQFgbXe8F#C5ckmyKix&"
-    # if passwordSecret is set, the password will be read from the secret
-    passwordSecret: {}
-    # name: byo-db-creds
-    # key: password
+  ssl:
+    enabled: false # Enabling this will require javaTrustStore to be enabled and configured properly
+    mode: "disable" # disable, verify-full
 
+istioGateway:
+  tlsCertSecretName: ""
+  host: "*"
+
+storage:
+  lakehouseBucketName: "lakehouse"
+  assetsBucketName: "assets"
+  # minio, dell_ecs, aws_s3, gcs, azure_gen1, azure_gen2
+  type: "minio"
+  minioSettings:
+    endpoint: "http://minio.default.svc:9000"
+    accessKey: "admin"
+    secretKey: "password"
 
 clusterDomain: cluster.local
+
+helmRepo:
+  url: "https://chartmuseum.iomete.com"
+  type: "default"
+  secretRef: ""
 
 docker:
   repo: iomete
   pullPolicy: Always
-  appVersion: 1.7.1
-  sparkVersion: 3.5.0
+  appVersion: 1.8.0
+  sparkVersion: 3.5.1
   imagePullSecrets: []
-  # - name: your-image-pull-secret
-
-# Enabled if you have multiple data-planes, and you need control-plane for SSO and other features
-controlPlane:
-  enabled: false
 
 dataCatalog:
-  enabled: false
+  enabled: true
+  storageSize: 1Gi
+
+opa:
+  enabled: true
 
 # Data Security
 ranger:
-  enabled: false
+  enabled: true
 
-# Enable advanced RBAC (Role Based Access Control) features in console.
-rbac:
-  enabled: false
+jupyterGateway:
+  authToken: "changeit"
+  kernels:
+    - pyspark_kernel
+    - spark_scala_kernel
 
-# Set `true` if prometheus-stack is installed in the cluster
-# You can install it with a separate helm chart
-# Read more: ...
-monitoring:
-  installed: false
+javaTrustStore:
+  enabled: false
+  secretName: java-truststore # Name of the secret with the truststore.jks file
+  fileName: truststore.jks
+  password: changeit
+  mountPath: /etc/ssl/certs
