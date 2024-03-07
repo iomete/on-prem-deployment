@@ -10,6 +10,8 @@ primary:
     size: 8Gi
   extendedConfiguration: |
     max_connections=500
+  podAnnotations:
+    sidecar.istio.io/inject: "false" # Disable sidecar injection
 
 backup:
   enabled: false
