@@ -1,6 +1,7 @@
 # Deploy Minio & Prepare Buckets
 
-Optionally, you can deploy a test Minio deployment
+To deploy a test Minio deployment
+
 ```shell
 kubectl apply -f minio/minio-test-deployment.yaml
 ```

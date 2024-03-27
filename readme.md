@@ -1,145 +1,86 @@
 # IOMETE On-Premises Deployment Guide
 
-IOMETE can be deployed on-premises within a Kubernetes cluster. This guide will help you through the steps to deploy IOMETE on-premises.
+This guide provides detailed instructions for deploying IOMETE on-premises within a Kubernetes environment, ensuring you have a seamless setup process.
 
-## Prerequisites
+## Essential Requirements Before You Start
 
-- A Kubernetes cluster with at least one data node (4 CPU, 32GB RAM). Allocated resources will be utilized by the IOMETE controller and Spark driver & executor pods.
-  - IOMETE Controller (2CPU, 4GB RAM)
-  - Spark Driver (Remaining resources (CPU, memory))
-- Node configuration recommendations:
-  - Uniform node size is recommended for simplicity and ease of management.
-  - Bigger node/VM sizes will yield better resource utilization.
-- An object storage system: Minio, DELL ECS, IBM Cloud Object Storage, AWS S3, Azure Blob Storage, Google Cloud Storage, and others.
-- Tools
-  - kubectl
-  - helm
-  - aws cli (for connection to the object storage)
+Before initiating the deployment, ensure your system meets the following prerequisites:
 
-## Hardware Requirements
+- **Kubernetes Cluster:** Your cluster should include at least one data node with the following specifications:
+  - **Minimum Specs for Data Node:** 4 CPU cores and 32GB of RAM.
+  - **Resource Allocation:**
+    - **IOMETE Controller:** Requires 2 CPU cores and 4GB of RAM.
+    - **Spark Driver:** Utilizes the remaining CPU cores and memory.
+- **Node Configuration Tips:**
+  - Opt for uniform node sizes to simplify management.
+  - Larger nodes or VMs provide improved resource efficiency.
+- **Object Storage:** Have one of the following ready: Minio, DELL ECS, IBM Cloud Object Storage, AWS S3, Azure Blob Storage, or Google Cloud Storage.
+- **Necessary Tools:**
+  - `kubectl` for cluster interaction.
+  - `helm` for package management.
+  - `aws cli` for object storage connectivity.
 
-The IOMETE controller requires 2 CPU and 4GB of RAM. The Spark driver and executors will use the remaining resources.
-> Note: It's recommended to use at least 4 CPU and 32GB of RAM for the data node.
+## Hardware Recommendations
 
-## Deployment
+For optimal performance:
+- The IOMETE controller should have 2 CPU cores and 4GB RAM.
+- It's advisable to equip the data node with a minimum of 4 CPU cores and 32GB RAM.
 
-> Note: Make sure `kubectl` is configured to point to the correct cluster (context).
-> Note: Clone this repo and change the current directory to this directory.
+## Deployment Steps
 
----
-### 1. Deploy Minio (Optional)
+Ensure you're targeting the right Kubernetes cluster with `kubectl` and have the necessary repository cloned.
 
-[Deploy Minio](minio/minio-deployment.md) if you don't have an object storage system. Minio is an open-source object storage system that can be deployed on-premises.
+### Optional: Deploying Minio
 
----
-### 2. Create iomete namespace
+If you lack an object storage system, consider deploying Minio, object storage solution. Follow the instructions [here](minio/minio-deployment.md).
+
+### Setting Up the Iomete Namespace
+
+A dedicated namespace for IOMETE is recommended for better organization. Create it using the following command:
+
 ```shell
 kubectl create namespace iomete-system
-kubectl label namespace iomete-system istio-injection=enabled
 ```
 
----
-### Prepare Database
+### Database Configuration
 
-IOMETE supports PostgreSQL as backend database. Following the instructions below, you will deploy a PostgreSQL database using Helm from the Bitnami repository.
+If you already have a PostgreSQL database, you can skip this step. Otherwise, deploy a PostgreSQL database using the following commands. 
+This is not a production-ready setup and should be used for testing purposes only.
 
 ```shell
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-
 helm upgrade --install -n iomete-system -f database/postgresql-values.yaml postgresql bitnami/postgresql
 ```
 
-> _Info: The database will be ready in about 30-40 seconds._
+### Integrating IOMETE Helm Repository
 
----
-### Deploy ISTIO
+Add the IOMETE helm repository for access to necessary charts:
 
-Add istio helm repository:
 ```shell
-helm repo add istio https://istio-release.storage.googleapis.com/charts
-helm repo update
-```
-
-Deploy istio helm charts:
-```shell
-helm upgrade --install -n iomete-system  base istio/base --version 1.17.2 --set global.istioNamespace=iomete-system
-# In `istio/istio-mesh-config-values.yaml`: replace `iomete-system` with the namespace where IOMETE is installed if it is different
-helm upgrade --install -n iomete-system istiod istio/istiod --version 1.17.2 --set global.istioNamespace=iomete-system --set global.oneNamespace=true -f istio/istio-mesh-config-values.yaml
-helm upgrade --install -n iomete-system istio-ingress istio/gateway --version 1.17.2
-```
-
-See [Istio Deployment](istio/istio-deployment.md) for other deployment options.
-
-----
-### Deploy FluxCD
-
-IOMETE utilizes FluxCD to deploy and manage IOMETE components. FluxCD is a GitOps operator for Kubernetes.
-
-Add fluxcd helm repo:
-```shell
-helm repo add fluxcd-community https://fluxcd-community.github.io/helm-charts
-helm repo update
-```
-
-Deploy FluxCD:
-```shell
-kubectl create namespace fluxcd
-helm upgrade --install -n fluxcd fluxcd fluxcd-community/flux2 \
-  --version 2.10.0 \
-  --set imageAutomationController.create=false \
-  --set imageReflectionController.create=false \
-  --set kustomizeController.create=false \
-  --set notificationController.create=false  
-```
-
-See [FluxCD Deployment](fluxcd/fluxcd-deployment.md) for other deployment options.
-
----
-### Deploy IOMETE Data Plane Base
-
-IOMETE Data Plane Base is a base deployment for IOMETE Data Plane. It includes CRDs, ClusterRole, Lakehouse Service Account, and Roles.
-
-Add iomete helm repo:
-```shell
-# add iomete helm repo
 helm repo add iomete https://chartmuseum.iomete.com
 helm repo update
 ```
 
+### Deploying IOMETE Data Plane Base
 
-Deploy IOMETE Data Plane Base:
-
-```shell
-helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-enterprise-base --version 1.8.0
-```
-
-See [IOMETE Data-plane Deployment](data-plane-deployment.md) for other deployment options.
-
-
----
-### Deploy IOMETE Data Plane
-
-> Note: Make sure `data-plane-values.yaml` is correctly configured.
+IOMETE Data Plane Base is a base deployment for IOMETE Data Plane. It includes CRDs, ClusterRole, Lakehouse Service Account, and Roles.
 
 ```shell
-helm upgrade --install -n iomete-system iomete-dataplane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 1.8.0
+helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-base --version 2.0.0 \
+    --set "imagePullSecrets[0].name=<iomete-image-pull-secret-name>"
 ```
 
-### DNS Configuration
+### Launching IOMETE Data Plane
 
-To configure DNS for your data plane instance, retrieve the external IP address. Depending on your setup, this IP address could be from a load balancer or a node port. This external IP is associated with the Istio ingress in the `istio-system` namespace.
+Ensure your `data-plane-values.yaml` file is correctly configured before deploying the IOMETE Data Plane:
 
-Here are the steps to follow:
+```shell
+helm upgrade --install -n iomete-system iomete-dataplane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 2.0.0
+```
 
-1. To get the external IP address, use the following `kubectl` command:
+### Setting Up Ingress
 
-    ```shell
-    kubectl get svc istio-ingress -n istio-system
-    ```
+For ingress configuration, refer to the [Istio Deployment guide](istio-ingress/istio-deployment.md).
 
-   Look for the `EXTERNAL-IP` field in the output. This is the IP address to be used for DNS configuration.
-
-2. Use the retrieved external IP address to configure your DNS settings. The process will depend on your DNS provider or your internal DNS configuration system.
-
-Note: Multi-catalog configuration has been moved to the web UI. Please, in the web UI, go to `Settings > Spark catalogs` to configure your catalogs.
+By following these steps, you'll have IOMETE successfully deployed on-premises, ready to empower your data-driven decisions.

@@ -8,7 +8,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 100Gi
 ---
 ## Run minio fs deployment.
 apiVersion: apps/v1

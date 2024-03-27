@@ -33,14 +33,6 @@ database:
   ssl:
     enabled: false # Enabling this will require javaTrustStore to be enabled and configured properly
     mode: "disable" # disable, verify-full
-  
-istioGateway:
-  # if you want to enable TLS, set the tlsCertSecretName
-  # name of the secret with certificates. Secret should contain 2 files: tls.crt and tls.key
-  # if redirectHttpToHttps is set to true, this secret must be provided to handle https traffic
-  tlsCertSecretName: ""
-  # If you have multiple data-planes, provide IP or DNS name, so istio-ingress can route traffic to the correct data-plane
-  host: "*"
 
 spark:
   logLevel: warn
@@ -76,16 +68,11 @@ storage:
 
 clusterDomain: cluster.local
 
-helmRepo:
-  url: "https://chartmuseum.iomete.com" # Change this to your Helm repo URL
-  type: "default" # Use "default" for traditional Helm repos or "oci" for OCI-based repos
-  secretRef: "" # Name of the Kubernetes secret for repo access; leave empty if not needed
-
 docker:
   repo: iomete
   pullPolicy: Always
-  appVersion: 1.8.0
-  sparkVersion: 3.5.1
+  appVersion: 2.0.0
+  sparkVersion: 3.5.2
   imagePullSecrets: []
   # - name: your-image-pull-secret
   
@@ -103,7 +90,6 @@ opa:
   enabled: true
   
 jupyterGateway:
-  authToken: "changeit"
   kernels:
     - pyspark_kernel
     - spark_scala_kernel
@@ -118,4 +104,4 @@ javaTrustStore:
   secretName: java-truststore # Name of the secret with the truststore.jks file
   fileName: truststore.jks
   password: changeit
-  mountPath: /etc/ssl/certs
+  mountPath: /etc/ssl/iomete-certs

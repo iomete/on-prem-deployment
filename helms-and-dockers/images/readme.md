@@ -1,37 +1,30 @@
-# Docker Images - Migrating to Customer's Registry
+# Migrating Docker Images to a Private Registry
 
-Sometimes, the environment where you are deploying your application may not have access to the public Docker Hub registry. In such cases, you may need to migrate the images to a private registry. This can be done by pulling the images from the public registry and pushing them to the private registry. 
-This process is automated with the provided Makefile in this directory.
+When deploying applications in environments without access to Docker Hub, you might need to transfer Docker images to a private registry. This section details the process of automating this migration using a Makefile.
 
-## Overview
+## Setting Up for Migration
 
-1. **TARGET_REPO**: This variable defines the target repository to which the images will be pushed. Please, specify your target repository in the `Makefile`.
-2. **IMAGES**: This variable reads the list of images from an external file `images.list`. It contains all the IOMETE docker images already that are in the public Docker Hub registry.
+The Makefile uses two key variables to manage the migration process:
 
-For each image in the `IMAGES` list, the Makefile performs three steps:
-   - Pull the image from the source repository which is IOMETE's public Docker Hub registry.
-   - Tag the image with the target repository.
-   - Push the image to the target repository.
+1. **TARGET_REPO**: Defines the destination repository. Update this in the `Makefile` to specify where the images will be moved.
+2. **IMAGES**: Lists the Docker images to be transferred. This list is sourced from `images.list`, containing IOMETE Docker images present in the public Docker Hub.
 
-## Run
+The Makefile automates the transfer of each image through the following steps:
 
-> Note: Ensure you are logged into your Docker registry before running this Makefile. Source docker images are already in the public Docker Hub registry.
+- **Pulling:** Retrieves the image from IOMETE's public Docker Hub registry.
+- **Tagging:** Assigns a new tag to the image, incorporating the target repository's address.
+- **Pushing:** Uploads the image to your specified target repository.
+
+## Executing the Migration
+
+Before initiating the migration, ensure you're authenticated with your private Docker registry. This authentication is crucial for pushing images to the target repository.
+
+To start the migration, execute the Makefile with the following command in your terminal:
 
 ```shell
 make
 ```
 
+This command triggers the Makefile to loop through each image in the `IMAGES` list, applying the pull, tag, and push operations to migrate them to your specified private registry.
 
-## Additional Docker Images
-
-Apart from the images in the `images.list` file, there are a few more images that need to be migrated to your Docker registry.
-These images are istio, fluxcd, minio, and postgresql images.
-
-```shell
-docker.io/bitnami/postgresql:16.1.0-debian-11-r24
-docker.io/istio/pilot:1.17.2
-docker.io/istio/proxyv2:1.17.2
-ghcr.io/fluxcd/helm-controller:v0.36.0
-ghcr.io/fluxcd/source-controller:v1.1.0
-minio/minio
-```
+By completing these steps, you'll successfully relocate the necessary Docker images from the public IOMETE registry to your own private registry, ensuring your environment has the required resources for deployment.

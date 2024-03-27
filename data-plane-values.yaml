@@ -17,10 +17,6 @@ database:
     enabled: false # Enabling this will require javaTrustStore to be enabled and configured properly
     mode: "disable" # disable, verify-full
 
-istioGateway:
-  tlsCertSecretName: ""
-  host: "*"
-
 storage:
   lakehouseBucketName: "lakehouse"
   assetsBucketName: "assets"
@@ -33,16 +29,11 @@ storage:
 
 clusterDomain: cluster.local
 
-helmRepo:
-  url: "https://chartmuseum.iomete.com"
-  type: "default"
-  secretRef: ""
-
 docker:
   repo: iomete
   pullPolicy: Always
-  appVersion: 1.8.0
-  sparkVersion: 3.5.1
+  appVersion: 2.0.0
+  sparkVersion: 3.5.2
   imagePullSecrets: []
 
 dataCatalog:
@@ -57,7 +48,6 @@ ranger:
   enabled: true
 
 jupyterGateway:
-  authToken: "changeit"
   kernels:
     - pyspark_kernel
     - spark_scala_kernel
@@ -67,4 +57,7 @@ javaTrustStore:
   secretName: java-truststore # Name of the secret with the truststore.jks file
   fileName: truststore.jks
   password: changeit
-  mountPath: /etc/ssl/certs
+  mountPath: /etc/ssl/iomete-certs
+
+monitoring:
+  installed: true
