@@ -3,7 +3,7 @@
 To deploy a test Minio deployment
 
 ```shell
-kubectl apply -f minio/minio-test-deployment.yaml
+kubectl apply -n iomete-system -f minio/minio-test-deployment.yaml
 ```
 
 Create two dedicated buckets in your object storage – one for the lakehouse and another for assets.

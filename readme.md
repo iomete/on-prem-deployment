@@ -30,11 +30,7 @@ For optimal performance:
 
 Ensure you're targeting the right Kubernetes cluster with `kubectl` and have the necessary repository cloned.
 
-### Optional: Deploying Minio
-
-If you lack an object storage system, consider deploying Minio, object storage solution. Follow the instructions [here](minio/minio-deployment.md).
-
-### Setting Up the Iomete Namespace
+### Setting Up the IOMETE Namespace
 
 A dedicated namespace for IOMETE is recommended for better organization. Create it using the following command:
 
@@ -42,16 +38,13 @@ A dedicated namespace for IOMETE is recommended for better organization. Create 
 kubectl create namespace iomete-system
 ```
 
-### Database Configuration
+#### Optional: Deploying Minio
 
-If you already have a PostgreSQL database, you can skip this step. Otherwise, deploy a PostgreSQL database using the following commands. 
-This is not a production-ready setup and should be used for testing purposes only.
+If you don't have object storage system, consider deploying Minio, object storage solution. Follow the instructions [here](minio/minio-deployment.md).
 
-```shell
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-helm upgrade --install -n iomete-system -f database/postgresql-values.yaml postgresql bitnami/postgresql
-```
+#### Optional: Database Configuration
+
+If you don't have a PostgreSQL database, deploy one using the instructions [here](database/postgresql-deployment.md).
 
 ### Integrating IOMETE Helm Repository
 
@@ -76,7 +69,7 @@ helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane
 Ensure your `data-plane-values.yaml` file is correctly configured before deploying the IOMETE Data Plane:
 
 ```shell
-helm upgrade --install -n iomete-system iomete-dataplane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 2.0.0
+helm upgrade --install -n iomete-system data-plane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 2.0.0
 ```
 
 ### Setting Up Ingress

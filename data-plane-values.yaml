@@ -9,7 +9,6 @@ database:
   user: "iomete_user"
   password: "iomete_pass"
   prefix: "iomete_" # all IOMETE databases should be prefixed with this. See database init script.
-  defaultSchema: public
   adminCredentials:
     user: "postgres"
     password: "onXB8UbEqYzkQFgbXe8F#C5ckmyKix&"
@@ -23,7 +22,7 @@ storage:
   # minio, dell_ecs, aws_s3, gcs, azure_gen1, azure_gen2
   type: "minio"
   minioSettings:
-    endpoint: "http://minio.default.svc:9000"
+    endpoint: "http://minio:9000"
     accessKey: "admin"
     secretKey: "password"
 
@@ -40,17 +39,20 @@ dataCatalog:
   enabled: true
   storageSize: 1Gi
 
-opa:
-  enabled: true
-
 # Data Security
 ranger:
+  enabled: true
+
+opa:
   enabled: true
 
 jupyterGateway:
   kernels:
     - pyspark_kernel
     - spark_scala_kernel
+
+monitoring:
+  installed: true
 
 javaTrustStore:
   enabled: false
@@ -59,5 +61,5 @@ javaTrustStore:
   password: changeit
   mountPath: /etc/ssl/iomete-certs
 
-monitoring:
-  installed: true
+ingress:
+  httpsEnabled: false

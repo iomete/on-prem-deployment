@@ -59,17 +59,15 @@ kind: Service
 metadata:
   name: minio
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: minio
   ports:
     - name: s3-api
-      nodePort: 31128 #range 30000-32767
       port: 9000
       protocol: TCP
       targetPort: 9000
     - name: console
-      nodePort: 31129 #range 30000-32767
       port: 9001
       protocol: TCP
       targetPort: 9001
