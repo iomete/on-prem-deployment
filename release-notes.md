@@ -1,5 +1,10 @@
 # Release Notes
 
+## IOMETE 2.0.1
+
+Minor bug fixes and enhancements.
+
+
 ## IOMETE 2.0.0
 
 ### Enhanced Connectivity and Compatibility

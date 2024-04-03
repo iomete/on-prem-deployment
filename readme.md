@@ -40,7 +40,7 @@ kubectl create namespace iomete-system
 
 #### Optional: Deploying Minio
 
-If you don't have object storage system, consider deploying Minio, object storage solution. Follow the instructions [here](minio/minio-deployment.md).
+If you lack an object storage system, consider deploying Minio, object storage solution. Follow the instructions [here](minio/minio-deployment.md).
 
 #### Optional: Database Configuration
 
@@ -69,7 +69,7 @@ helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane
 Ensure your `data-plane-values.yaml` file is correctly configured before deploying the IOMETE Data Plane:
 
 ```shell
-helm upgrade --install -n iomete-system data-plane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 2.0.0
+helm upgrade --install -n iomete-system data-plane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 2.0
 ```
 
 ### Setting Up Ingress
