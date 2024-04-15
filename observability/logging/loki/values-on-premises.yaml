@@ -1,0 +1,54 @@
+global:
+  image:
+    # -- Overrides the Docker registry globally for all images
+    registry: null
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: false
+  name: lakehouse-service-account
+
+loki:
+  # Should authentication be enabled
+  auth_enabled: false
+  commonConfig:
+    path_prefix: /var/loki
+    replication_factor: 1
+  podLabels:
+    "sidecar.istio.io/inject": "false"
+  storage:
+    bucketNames:
+      chunks: assets
+      ruler: assets
+      admin: assets
+    type: s3
+    s3:
+      endpoint: http://minio.iomete-system.svc.cluster.local:9000
+      region: us-east-1
+      secretAccessKey: password
+      accessKeyId: admin
+      s3ForcePathStyle: true
+      insecure: false
+
+singleBinary:
+  replicas: 1
+
+# -- Section for configuring optional Helm test
+test:
+  enabled: false
+
+# Monitoring section determines which monitoring features to enable
+monitoring:
+  dashboards:
+    enabled: false
+  rules:
+    enabled: false
+  serviceMonitor:
+    enabled: false
+  selfMonitoring:
+    enabled: false
+    grafanaAgent:
+      installOperator: false
+  lokiCanary:
+    enabled: false

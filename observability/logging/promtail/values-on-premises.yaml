@@ -1,0 +1,23 @@
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+
+daemonset:
+  enabled: true
+
+podLabels:
+  "sidecar.istio.io/inject": "false"
+
+image:
+  registry: docker.io
+  repository: grafana/promtail
+  pullPolicy: IfNotPresent
+
+sidecar:
+  configReloader:
+    enabled: false
+    image:
+      registry: docker.io
+      repository: jimmidyson/configmap-reload
+      tag: v0.8.0
+      pullPolicy: IfNotPresent
