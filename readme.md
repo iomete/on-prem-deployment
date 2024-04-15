@@ -55,12 +55,18 @@ helm repo add iomete https://chartmuseum.iomete.com
 helm repo update
 ```
 
+### Generating Certificates
+
+```shell
+./gencerts.sh -n iomete-system -s spark-operator-webhook -r spark-operator-webhook-certs
+```
+
 ### Deploying IOMETE Data Plane Base
 
 IOMETE Data Plane Base is a base deployment for IOMETE Data Plane. It includes CRDs, ClusterRole, Lakehouse Service Account, and Roles.
 
 ```shell
-helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-base --version 2.0.0 \
+helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-base --version 2.1.0 \
     --set "imagePullSecrets[0].name=<iomete-image-pull-secret-name>"
 ```
 
@@ -69,7 +75,8 @@ helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane
 Ensure your `data-plane-values.yaml` file is correctly configured before deploying the IOMETE Data Plane:
 
 ```shell
-helm upgrade --install -n iomete-system data-plane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 2.0
+# helm repo update iomete
+helm upgrade --install -n iomete-system data-plane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 2.1
 ```
 
 ### Setting Up Ingress

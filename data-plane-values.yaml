@@ -28,22 +28,14 @@ storage:
 
 spark:
   logLevel: info
-  shuffleStorage:
-    type: "host-path"
-    hostPath: "/local1"
-  # For dynamic PVC allocation, use the following configuration
-  # shuffleStorage:
-    # type: "pvc-on-demand"
-    # storageClassName: "default"
-    # sizeLimit: "100Gi"
 
 clusterDomain: cluster.local
 
 docker:
   repo: iomete
   pullPolicy: Always
-  appVersion: 2.0.1
-  sparkVersion: 3.5.2
+  appVersion: 2.1.0
+  sparkVersion: 3.5.1
   imagePullSecrets: []
 
 dataCatalog:
@@ -71,3 +63,6 @@ javaTrustStore:
   fileName: truststore.jks
   password: changeit
   mountPath: /etc/ssl/iomete-certs
+
+ingress:
+  httpsEnabled: false

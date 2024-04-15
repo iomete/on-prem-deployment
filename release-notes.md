@@ -1,5 +1,20 @@
 # Release Notes
 
+## IOMETE 2.1.0
+
+### New Features
+
+- **Volume Settings**: Users can now adjust volume settings directly from the IOMETE Console. This includes selecting volume configurations for each Spark resource, with options for hostpath, dynamic PVC, and size specifications on a per-resource basis.
+
+### Enhancements
+- 
+- **Spark Connect Clusters - Connection Stability**: Issues affecting Spark Connect Cluster connections, particularly from Jupyter notebooks and Windows environments, have been addressed.
+- **Spark Operator Webhook Configuration**: This can now be deployed separately. This also enabled removing ClusterRole requirements from the base Helm chart.
+- **Removed Cluster Role**: The Cluster Role previously required (to control MutatingAdmissionWebhookConfiguration) for the spark-operator is removed from the base Helm chart.
+- **User Permissions**: Spark clusters previously running under root user permissions are now configured to operate under non-root user permissions.
+- **Grafana Metrics**: The hardcoded namespace issue in the Grafana monitoring dashboard has been resolved.
+- **Bug Fixes**: Various minor issues from the last release, including Spark URL problems, have been resolved.
+
 ## IOMETE 2.0.1
 
 Minor bug fixes and enhancements.
