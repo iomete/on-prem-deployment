@@ -1,6 +1,6 @@
 # Release Notes
 
-## IOMETE 2.1.0
+## IOMETE 1.9.2
 
 ### New Features
 
@@ -13,10 +13,6 @@
 - **User Permissions**: Spark clusters previously running under root user permissions are now configured to operate under non-root user permissions.
 - **Grafana Metrics**: The hardcoded namespace issue in the Grafana monitoring dashboard has been resolved.
 - **Bug Fixes**: Various minor issues from the last release, including Spark URL problems, have been resolved.
-
-## IOMETE 2.0.1
-
-Minor bug fixes and enhancements.
 
 
 ## IOMETE 2.0.0

@@ -66,7 +66,7 @@ helm repo update
 IOMETE Data Plane Base is a base deployment for IOMETE Data Plane. It includes CRDs, ClusterRole, Lakehouse Service Account, and Roles.
 
 ```shell
-helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-base --version 2.1 \
+helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-base --version 1.9 \
     --set "imagePullSecrets[0].name=<iomete-image-pull-secret-name>"
 ```
 
@@ -76,7 +76,7 @@ Ensure your `data-plane-values.yaml` file is correctly configured before deployi
 
 ```shell
 # helm repo update iomete
-helm upgrade --install -n iomete-system data-plane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 2.1
+helm upgrade --install -n iomete-system data-plane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 1.9
 ```
 
 ### Setting Up Ingress

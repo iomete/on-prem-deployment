@@ -34,7 +34,7 @@ clusterDomain: cluster.local
 docker:
   repo: iomete
   pullPolicy: Always
-  appVersion: 2.1.0
+  appVersion: 1.9.2
   sparkVersion: 3.5.1
   imagePullSecrets: []
 
