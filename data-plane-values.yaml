@@ -55,7 +55,7 @@ jupyterGateway:
     - spark_scala_kernel
 
 monitoring:
-  installed: true
+  installed: false
 
 javaTrustStore:
   enabled: false
