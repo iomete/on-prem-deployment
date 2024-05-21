@@ -13,8 +13,7 @@ helm repo update
 
 # Deploy IOMETE Data Plane (to customize the installation see the Configuration section)
 helm upgrade --install -n iomete-system iomete-data-plane \
-  iomete/iomete-data-plane-enterprise --version 1.10.0 \
-  --set ingress.httpsEnabled=false
+  iomete/iomete-data-plane-enterprise --version 1.10.0
 ```
 
 ## Configuration
