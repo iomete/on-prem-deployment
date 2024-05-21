@@ -100,12 +100,12 @@ logging:
   source: "kubernetes" # kubernetes, loki, elasticsearch
   lokiSettings: {}
     # host: "loki-gateway"
-  # port: "80"
+    # port: "80"
   elasticSearchSettings: {}
     # host: "elasticsearch-master.efk.svc.cluster.local"
     # port: "9200"
     # apiKey: "elastic"
-  # indexPattern: "logstash-*"
+    # indexPattern: "logstash-*"
 
 javaTrustStore:
   enabled: false
