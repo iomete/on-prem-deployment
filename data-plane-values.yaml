@@ -17,8 +17,7 @@ database:
     mode: "disable" # disable, verify-full
 
 storage:
-  lakehouseBucketName: "lakehouse"
-  assetsBucketName: "assets"
+  bucketName: "lakehouse"
   # minio, dell_ecs, aws_s3, gcs, azure_gen1, azure_gen2
   type: "minio"
   minioSettings:
@@ -34,7 +33,7 @@ clusterDomain: cluster.local
 docker:
   repo: iomete
   pullPolicy: Always
-  appVersion: 1.9.2
+  appVersion: 1.10.0
   sparkVersion: 3.5.1
   imagePullSecrets: []
 
@@ -46,9 +45,6 @@ dataCatalog:
 ranger:
   enabled: true
 
-opa:
-  enabled: true
-
 jupyterGateway:
   kernels:
     - pyspark_kernel
@@ -56,6 +52,9 @@ jupyterGateway:
 
 monitoring:
   installed: false
+
+logging:
+  source: "kubernetes" # kubernetes, loki, elasticsearch
 
 javaTrustStore:
   enabled: false

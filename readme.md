@@ -23,7 +23,7 @@ Before initiating the deployment, ensure your system meets the following prerequ
 ## Hardware Recommendations
 
 For optimal performance:
-- The IOMETE controller should have 2 CPU cores and 4GB RAM.
+- The IOMETE controller should have 4 CPU cores and 8GB RAM.
 - It's advisable to equip the data node with a minimum of 4 CPU cores and 32GB RAM.
 
 ## Deployment Steps
@@ -67,7 +67,7 @@ IOMETE Data Plane Base is a base deployment for IOMETE Data Plane. It includes C
 
 ```shell
 helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-base --version 1.9 \
-    --set "imagePullSecrets[0].name=<iomete-image-pull-secret-name>"
+    --set "docker.imagePullSecrets[0].name=<iomete-image-pull-secret-name>"
 ```
 
 ### Launching IOMETE Data Plane
@@ -76,7 +76,7 @@ Ensure your `data-plane-values.yaml` file is correctly configured before deployi
 
 ```shell
 # helm repo update iomete
-helm upgrade --install -n iomete-system data-plane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 1.9
+helm upgrade --install -n iomete-system data-plane iomete/iomete-data-plane-enterprise -f data-plane-values.yaml --version 1.10
 ```
 
 ### Setting Up Ingress

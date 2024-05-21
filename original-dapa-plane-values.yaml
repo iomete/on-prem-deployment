@@ -49,8 +49,7 @@ keycloak:
   endpoint: "http://keycloak-http/auth"
 
 storage:
-  lakehouseBucketName: "lakehouse"
-  assetsBucketName: "assets"
+  bucketName: "lakehouse"
   # minio, dell_ecs, aws_s3, gcs, azure_gen1
   type: "minio"
   dellEcsSettings: {}
@@ -71,11 +70,11 @@ clusterDomain: cluster.local
 docker:
   repo: iomete
   pullPolicy: Always
-  appVersion: 1.9.2
+  appVersion: 1.10.0
   sparkVersion: 3.5.1
   imagePullSecrets: []
   # - name: your-image-pull-secret
-  
+
 dataCatalog:
   enabled: true
   # Allocated memory for Typesense search engine
@@ -84,11 +83,9 @@ dataCatalog:
 # Data Security Module
 ranger:
   enabled: true
+  audit:
+    enabled: false
 
-# Enable OPA(Open Policy Agent) for advanced RBAC (Role Based Access Control) features in Console.
-opa:
-  enabled: true
-  
 jupyterGateway:
   kernels:
     - pyspark_kernel
@@ -98,6 +95,17 @@ jupyterGateway:
 # You can install it with a separate helm chart
 monitoring:
   installed: false
+
+logging:
+  source: "kubernetes" # kubernetes, loki, elasticsearch
+  lokiSettings: {}
+    # host: "loki-gateway"
+  # port: "80"
+  elasticSearchSettings: {}
+    # host: "elasticsearch-master.efk.svc.cluster.local"
+    # port: "9200"
+    # apiKey: "elastic"
+  # indexPattern: "logstash-*"
 
 javaTrustStore:
   enabled: false
