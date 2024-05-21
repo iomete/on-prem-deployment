@@ -1,28 +1,37 @@
 # Release Notes
 
-
 ## IOMETE 1.10.0
 
 ### New Features
 
-- **Logging Source**: Users now have the flexibility to choose their logging source. Previously, only Loki was supported. Now, users can choose between Kubernetes, Loki, and Elasticsearch.
-	•	Kubernetes: Displays logs only for active/current resources and does not include historical data (e.g., logs for terminated resources are not available).
-	•	Elasticsearch: Requires an SSL connection and an API key for authentication.
+#### Register Iceberg Table from S3 Location
+Enables the creation of a catalog entry for an existing Iceberg table located in S3 that does not currently have a catalog identifier. **Important Note**: Avoid registering the same Iceberg table in more than one catalog to prevent data inconsistencies and potential corruption. Utilizes the [Register Table](https://iceberg.apache.org/docs/latest/spark-procedures/#register_table) procedure from the Iceberg system.
+
+#### Snapshot Parquet Table
+Allows the creation of a lightweight Iceberg table over an existing Parquet table folder without modifying the original source table. The snapshot table can be altered or written to independently of the source table while using the original data files. Employs the [snapshot](https://iceberg.apache.org/docs/latest/spark-procedures/#snapshot) procedure from the Iceberg system.
+
+#### Configurable Logging Sources 
+Users now have the flexibility to choose their logging source. Previously, only Loki was supported. Now, users can choose between Kubernetes, Loki, and Elasticsearch.
+- Kubernetes: Displays logs only for active/current resources and does not include historical data (e.g., logs for terminated resources are not available).
+- Elasticsearch: Requires an SSL connection and an API key for authentication.
 
 ### Enhancements
 
-- **Pod Security Context**: Added securityContext settings to all pods, ensuring that all resources are running as non-root users.
-    •	Note that Spark images requires root user only if using default hostPath volumes, which can be adjusted from Volume Settings in the IOMETE Console by choosing Dynamic PVC.
-    •	Currently, only Apache Ranger requires root user permissions, which will be addressed in a future release.
+#### Pod Security Context
+Added securityContext settings to all pods, ensuring that all resources are running as non-root users.
+- Note that Spark images requires root user only if using default hostPath volumes, which can be adjusted from Volume Settings in the IOMETE Console by choosing Dynamic PVC.
+- Currently, only Apache Ranger requires root user permissions, which will be addressed in a future release.
 
-- **Eliminated Assets Bucket**: We have eliminated additional bucket created/used for assets, which was previously required for storing assets like 'sql query results', 'spark history data', etc. Now, assets are stored in the same bucket as the data lake.
+#### Eliminated Assets Bucket
+We have eliminated additional bucket created/used for assets, which was previously required for storing assets like 'sql query results', 'spark history data', etc. Now, assets are stored in the same bucket as the default lakehouse bucket.
 
-- **Role/Permissions Settings**: Redesigned and improved role/permissions settings for better user management and access control.
-    •	Updated permissions page desing for better user experience.
-    •	IAM Settings now controlled by two permissions: View and Manage. Previously each component of IAM settings (Users / Groups / Roles) managed by separate permissions.
-    •	Data Security / Data Catalog: List and View actions combined into a single `View` permission. Create and Manage actions combined into a single `Manage` permission.
-    •	Added new permission for Spark Settings.
-    •	Added new permission for Data Plane Settings.
+#### Role/Permissions Settings
+Redesigned and improved role/permissions settings for better user management and access control.
+- Updated permissions page design for better user experience.
+- IAM Settings now controlled by two permissions: View and Manage. Previously each component of IAM settings (Users / Groups / Roles) managed by separate permissions.
+- Data Security / Data Catalog: List and View actions combined into a single `View` permission. Create and Manage actions combined into a single `Manage` permission.
+- Added new permission for Spark Settings.
+- Added new permission for Data Plane Settings.
 
 
 ## IOMETE 1.9.2

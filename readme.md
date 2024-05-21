@@ -1,4 +1,4 @@
-# IOMETE On-Premises Deployment Guide
+# IOMETE On-Premises Deployment Guide - 1.10.0
 
 This guide provides detailed instructions for deploying IOMETE on-premises within a Kubernetes environment, ensuring you have a seamless setup process.
 
@@ -66,7 +66,7 @@ helm repo update
 IOMETE Data Plane Base is a base deployment for IOMETE Data Plane. It includes CRDs, ClusterRole, Lakehouse Service Account, and Roles.
 
 ```shell
-helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-base --version 1.9 \
+helm upgrade --install -n iomete-system data-plane-base iomete/iomete-data-plane-base --version 1.10 \
     --set "docker.imagePullSecrets[0].name=<iomete-image-pull-secret-name>"
 ```
 
