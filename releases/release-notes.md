@@ -1,5 +1,19 @@
 # Release Notes
 
+
+## IOMETE 1.11.0
+
+- Iceberg upgraded to 1.5.
+- Ranger now operates as non-root with `securityContext` configuration.
+- Fixed a deployment issue where a warning was generated due to the `podSecurityContext` containing an unknown field `seccompProfile` in Spark executor pods.
+- Fixed issue where `Typesense` pod stuck due to PVC not being released by old pod. Changed the deployment strategy to `Recreate` for Typesense.
+- Added **Requests** and **Limits** to all IOMETE Kubernetes resources.
+- Added property `dataCatalog.piiDetection` in the `values.yaml` deployment file.
+  - If enabled, the `Presidio(docker)` PII analyzer will be installed. It is disabled by default due to the large Docker image size, which exceeds 6GB.
+  - If enabled, `PII_DETECTION_ENABLED` environment variable or `-DpiiDetectionEnabled=true` java options must be set to true in Catalog Sync spark job.
+- Iceberg: Fixed the issue with reading parquet time_micros fields defined as bigint in the schema by adding BigIntVector allocation in VectorizedArrowReader.
+
+
 ## IOMETE 1.10.0
 
 ### New Features

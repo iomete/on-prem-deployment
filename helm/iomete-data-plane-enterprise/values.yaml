@@ -70,7 +70,7 @@ clusterDomain: cluster.local
 docker:
   repo: iomete
   pullPolicy: Always
-  appVersion: 1.10.0
+  appVersion: 1.11.0
   sparkVersion: 3.5.1
   imagePullSecrets: []
   # - name: your-image-pull-secret
@@ -79,6 +79,8 @@ dataCatalog:
   enabled: true
   # Allocated memory for Typesense search engine
   storageSize: 1Gi
+  # This enables the PII detection feature in the data catalog. It will also install the Presidio Docker image.
+  piiDetection: false
 
 # Data Security Module
 ranger:

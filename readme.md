@@ -1,4 +1,4 @@
-# IOMETE On-Premises Deployment Guide - 1.10.0
+# IOMETE On-Premises Deployment Guide
 
 This guide provides detailed instructions for deploying IOMETE on-premises within a Kubernetes environment, ensuring you have a seamless setup process.
 
@@ -27,6 +27,8 @@ For optimal performance:
 - It's advisable to equip the data node with a minimum of 4 CPU cores and 32GB RAM.
 
 ## Deployment Steps
+
+> For upgrade instructions, refer to the [Upgrade Guide](releases/1.11.0/upgrade.md)
 
 Ensure you're targeting the right Kubernetes cluster with `kubectl` and have the necessary repository cloned.
 
@@ -79,7 +81,7 @@ Ensure your `data-plane-values.yaml` file is correctly configured before deployi
 # helm repo update iomete
 helm upgrade --install -n iomete-system data-plane \
   iomete/iomete-data-plane-enterprise \
-  -f example-data-plane-values.yaml --version 1.10
+  -f example-data-plane-values.yaml --version 1.11
 ```
 
 For more details, refer to the [IOMETE Data Plane Helm Chart](helm/iomete-data-plane-enterprise/readme.md).
