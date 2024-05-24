@@ -28,7 +28,17 @@ iomete/spark:3.5.1
 iomete/iom-catalog-sync:1.9.0
 ```
 
-### Upgrade IOMETE Data Plane
+## Upgrade IOMETE Data Plane
+
+### Helm Values Changes
+
+New configuration:
+- `dataCatalog.piiDetection`
+
+See the [IOMETE Data Plane Base Helm Chart](../../helm/iomete-data-plane-base/readme.md) for more details. 
+
+
+### Upgrade
 
 Ensure your `data-plane-values.yaml` file is correctly configured before deploying the IOMETE Data Plane:
 
@@ -38,3 +48,4 @@ helm upgrade --install -n iomete-system data-plane \
   iomete/iomete-data-plane-enterprise \
   -f example-data-plane-values.yaml --version 1.11
 ```
+
