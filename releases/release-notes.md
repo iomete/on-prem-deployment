@@ -1,6 +1,11 @@
 # Release Notes
 
 
+## IOMETE 1.11.1
+
+- Updated CRDs in `iomete-data-plane-base` chart to support `securityContext.seccompProfile`.
+- Added `securityContext.seccompProfile` to all spark containers.
+
 ## IOMETE 1.11.0
 
 - Iceberg upgraded to 1.5.
