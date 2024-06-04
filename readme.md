@@ -1,4 +1,4 @@
-# IOMETE On-Premises Deployment Guide (1.11.1)
+# IOMETE On-Premises Deployment Guide (1.12.0)
 
 This guide provides detailed instructions for deploying IOMETE on-premises within a Kubernetes environment, ensuring you have a seamless setup process.
 
