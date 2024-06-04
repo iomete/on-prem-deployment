@@ -81,7 +81,7 @@ Ensure your `data-plane-values.yaml` file is correctly configured before deployi
 # helm repo update iomete
 helm upgrade --install -n iomete-system data-plane \
   iomete/iomete-data-plane-enterprise \
-  -f example-data-plane-values.yaml --version 1.11
+  -f example-data-plane-values.yaml --version 1.12
 ```
 
 For more details, refer to the [IOMETE Data Plane Helm Chart](helm/iomete-data-plane-enterprise/readme.md).

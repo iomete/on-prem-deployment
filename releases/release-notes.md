@@ -1,5 +1,10 @@
 # Release Notes
 
+## IOMETE 1.12.0
+
+- Added Audit functionality. You can enable audit during helm installation by modifying property `ranger.audit.enabled`. If enabled, audit data will be stored in lakehouse bucket. Audit logs can be viewed from the IOMETE Console by accessing Data Security page and selecting Audit Logs from left sub-menu.  
+- Removed `docker.appVersion` from `values.yaml` file. Now using `Chart.AppVersion` property to set application version for IOMETE services.  
+- Socket and OpenAPI services now have static image version `1.10.0`, they won't be changed with AppVersion.  
 
 ## IOMETE 1.11.1
 

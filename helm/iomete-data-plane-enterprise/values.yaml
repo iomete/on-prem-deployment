@@ -70,7 +70,6 @@ clusterDomain: cluster.local
 docker:
   repo: iomete
   pullPolicy: Always
-  appVersion: 1.11.1
   sparkVersion: 3.5.1
   imagePullSecrets: []
   # - name: your-image-pull-secret
