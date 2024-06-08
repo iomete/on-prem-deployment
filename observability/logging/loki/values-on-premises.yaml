@@ -19,20 +19,30 @@ loki:
     "sidecar.istio.io/inject": "false"
   storage:
     bucketNames:
-      chunks: assets
-      ruler: assets
-      admin: assets
+      chunks: logs
+      ruler: logs
+      admin: logs
     type: s3
     s3:
-      endpoint: http://minio.iomete-system.svc.cluster.local:9000
+      endpoint: http://minio:9000
       region: us-east-1
       secretAccessKey: password
       accessKeyId: admin
       s3ForcePathStyle: true
       insecure: false
+  schemaConfig:
+    configs:
+      - from: 2024-04-01
+        object_store: s3
+        store: tsdb
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
 
-singleBinary:
-  replicas: 1
+deploymentMode: SingleBinary
+#singleBinary:
+#  replicas: 1
 
 # -- Section for configuring optional Helm test
 test:
