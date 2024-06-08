@@ -24,7 +24,6 @@ alias aws='aws --endpoint-url http://localhost:9000'
 
 # create s3 bucket
 aws s3 mb s3://lakehouse
-aws s3 mb s3://assets
 
 # verify buckets
 aws s3 ls
