@@ -9,7 +9,7 @@ iomete/iom-openapi-ui:1.10.0
 iomete/iom-socket:1.10.0
 iomete/iom-sql:1.13.0
 iomete/iomete-keycloak-theme:latest
-iomete/keycloak:13.0.1
+iomete/keycloak:24.0.4-pg
 iomete/metastore:6.3.1
 iomete/presidio-analyzer:latest
 iomete/ranger:2.4.2

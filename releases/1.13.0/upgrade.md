@@ -20,6 +20,7 @@ iomete/iom-core:1.13.0
 iomete/iom-data-plane-init:1.13.0
 iomete/iom-identity:1.13.0
 iomete/iom-sql:1.13.0
+iomete/keycloak:24.0.4-pg
 
 iomete/iom-catalog-sync:1.10.0
 ```
