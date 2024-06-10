@@ -1,5 +1,18 @@
 # Release Notes
 
+## IOMETE 1.13.0
+
+- Filters / Search improvements on UI:  
+  - Added search to Log Panel.  
+  - Added filters to Job List.  
+  - Added filters to Job Runs.  
+- Added more internal metrics (time metrics) to spark job endpoints and database operations.  
+- Kubernetes Events are now displayed in the IOMETE Console for Lakehouse / Spark Connect and Spark Job resource.
+- Added `deps.files` to Spark Job configuration. Which will download the files from the given URL and add them to the working directory e.g. `/opt/spark/work-dir`.  
+- Java SDK. Prepared java SDK for working with Spark Job API.  
+- Improved Error Logging.  
+- Fixed issue with Timezones.
+
 ## IOMETE 1.12.0
 
 - Added Audit functionality. You can enable audit during helm installation by modifying property `ranger.audit.enabled`. If enabled, audit data will be stored in lakehouse bucket. Audit logs can be viewed from the IOMETE Console by accessing Data Security page and selecting Audit Logs from left sub-menu.  

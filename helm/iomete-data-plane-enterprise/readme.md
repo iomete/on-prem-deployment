@@ -150,6 +150,7 @@ Set `true` if Prometheus stack is installed in the cluster. You can install it w
 
 If you need to talk to services with self-signed certificates, you can enable the Java TrustStore and provide the
 truststore file.
+P.S. `truststore.jks` file should include the default public certificates in order to work with common public resources (e.g. Github, Maven, Google). Do not create truststore.jks file with only self-signed certificates. Copy Java's default truststore and add your custom certificates to it.  
 
 | Name                      | Description                                                       | Default Value         | Available from Version |
 | ------------------------- | ----------------------------------------------------------------- | --------------------- | ---------------------- |
