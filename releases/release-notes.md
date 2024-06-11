@@ -1,5 +1,12 @@
 # Release Notes
 
+## IOMETE Release Patch 1.13.1
+
+- Fixed filter in Kubernetes events, when no data is displayed after choosing "Driver pod" filter.  
+- Fixed issue with Spark UI and Spark History links.  
+- Fixed issue when spark-operator unable to access startup files from the storage bucket.  
+- Spark Job arguments now automatically quoted, no need to quote each argument manually.  
+
 ## IOMETE 1.13.0
 
 - Filters / Search improvements on UI:  
