@@ -1,5 +1,8 @@
 # Release Notes
 
+## IOMETE Release Patch 1.13.2
+- Added TLS support to spark-operator.  
+
 ## IOMETE Release Patch 1.13.1
 
 - Fixed filter in Kubernetes events, when no data is displayed after choosing "Driver pod" filter.  

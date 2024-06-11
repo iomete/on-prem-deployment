@@ -2,7 +2,7 @@
 
 - **Helm Repository:** https://chartmuseum.iomete.com
 - **Chart Name:** `iomete-data-plane-enterprise`
-- **Latest Version:** `1.13.1`
+- **Latest Version:** `1.13.2`
 
 ## Quick Start
 
