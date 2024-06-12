@@ -1,5 +1,10 @@
 # Release Notes
 
+
+## IOMETE Release Patch 1.13.3  
+- Fixed issue with "Test Connection" in Spark Catalog settings.  
+- Spark Job names are now limited to 48 symbols, due to kubernetes limitations.  
+
 ## IOMETE Release Patch 1.13.2
 - Added TLS support to spark-operator.  
 
