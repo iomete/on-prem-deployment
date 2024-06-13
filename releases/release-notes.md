@@ -1,6 +1,10 @@
 # Release Notes
 
 
+## IOMETE Release Patch 1.14.0  
+- Ranger Audit now working as expected. Page added to Data Security section in IOMETE Console.  
+- Fixed issue with PowerBI integration.  
+
 ## IOMETE Release Patch 1.13.3  
 - Fixed issue with "Test Connection" in Spark Catalog settings.  
 - Spark Job names are now limited to 48 symbols, due to kubernetes limitations.  
