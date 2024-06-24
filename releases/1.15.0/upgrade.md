@@ -37,7 +37,3 @@ helm upgrade --install -n iomete-system data-plane \
   iomete/iomete-data-plane-enterprise \
   -f example-data-plane-values.yaml --version 1.15
 ```
-
-Notes:
-- Manually restart `iom-identity` service after deployment completed.
-
