@@ -2,7 +2,7 @@
 
 - **Helm Repository:** https://chartmuseum.iomete.com
 - **Chart Name:** `iomete-data-plane-enterprise`
-- **Latest Version:** `1.14.0`
+- **Latest Version:** `1.15.0`
 
 ## Quick Start
 
@@ -145,6 +145,7 @@ Set `true` if Prometheus stack is installed in the cluster. You can install it w
 | logging.source                                          | Source for logging. Options: kubernetes, loki, elasticsearch | [kubernetes](#kubernetes-logging) | 1.10.0                 |
 | [logging.lokiSettings](#loki-logging)                   | Settings for Loki logging backend.                           | {}                                | 1.10.0                 |
 | [logging.elasticSearchSettings](#elasticsearch-logging) | Settings for Elasticsearch logging backend.                  | {}                                | 1.10.0                 |
+| [logging.splunkSettings](#splunk-logging)               | Settings for Splunk logging backend.                         | {}                                | 1.15.0                 |
 
 ### 13. Java TrustStore Configuration
 
@@ -265,4 +266,15 @@ logging:
     port: "9200"
     apiKey: "elastic"
     indexPattern: "logstash-*"
+```
+
+#### Splunk Logging
+
+```yaml
+logging:
+  source: "splunk"
+  splunkSettings:
+    endpoint: "https://splunk-enterprise-standalone-service:8089"
+    token: "" # Bearer token created in Splunk Settings -> Tokens
+    indexName: "main"
 ```

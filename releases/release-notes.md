@@ -1,5 +1,32 @@
 # Release Notes
 
+## IOMETE Release Patch 1.15.0  
+- Spark History redirection issue fixed, when on first open it goes to home page  
+- Added all metrics to run details view  
+- Spark Operator improved performance  
+- Using run ID for creating kubernetes resources (spark applications, pods, services), due to service name issue caused by long job names  
+- Performance optimizations of spark runs  
+- Added support for Splunk logging  
+- Conflict issues fixed when submitting spark jobs over API  
+- Added new System Config to UI Console  
+- Periodic garbage collection for failed jobs in Kubernetes  
+- Added Timeline for tracking some status changes  
+- Run metrics now available during "running" state  
+- Added Kubernetes events to Spark Resources (Run, Lakehouse)  
+- Added Job retry policy  
+- Fixed issue when Spark UI sometimes was not updated  
+- Added "Spark Jobs alive time" to new "System Config" page  
+- Job Runs now support tags
+- Job Run list added filtering by tag  
+- Separated Driver and Executor tasks durations  
+- Added option to Re-trigger the run with the same configuration  
+- Showing summary of total running/complete/pending etc. run on the Spark job page  
+- Spark job - log view are automatically scrolls to bottom, when new logs are addeds  
+- Job Runs: Add time filter  
+- Scheduler Next Run info on UI
+- Added ID to Spark Run Details page  
+- Removed red color for 0 failed tasks  
+
 
 ## IOMETE Release Patch 1.14.0  
 - Ranger Audit now working as expected. Page added to Data Security section in IOMETE Console.  
