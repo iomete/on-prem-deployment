@@ -949,8 +949,8 @@
       {
         "current": {
           "selected": false,
-          "text": "iomete-system",
-          "value": "iomete-system"
+          "text": "None",
+          "value": ""
         },
         "datasource": {
           "type": "prometheus",
