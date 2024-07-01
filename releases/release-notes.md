@@ -1,5 +1,13 @@
 # Release Notes
 
+## IOMETE Release 1.16.0  
+- Added Nessie catalog support  
+- Updated spark-operator: Perfomance optimizations and bug fixes  
+- Added validation to Node Types. CPU limited to minimum 300 millicores, and memory to 900 MiB according to Spark requirements  
+- UI Improvements  
+- Fixed issue with "STARTING" status in Spark Jobs  
+
+
 ## IOMETE Release 1.15.0  
 
 Spark Operator Enhancements:
@@ -37,6 +45,7 @@ Performance Optimizations:
 
 Additional Features:
 - Implemented "Spark Jobs alive time" configuration
+
 
 ## IOMETE Release 1.14.0  
 - Ranger Audit now working as expected. Page added to Data Security section in IOMETE Console.  

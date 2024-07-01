@@ -1,4 +1,4 @@
-# IOMETE On-Premises Deployment Guide (1.15)
+# IOMETE On-Premises Deployment Guide (1.16)
 
 This guide provides detailed instructions for deploying IOMETE on-premises within a Kubernetes environment, ensuring you have a seamless setup process.
 
@@ -81,7 +81,7 @@ Ensure your `data-plane-values.yaml` file is correctly configured before deployi
 # helm repo update iomete
 helm upgrade --install -n iomete-system data-plane \
   iomete/iomete-data-plane-enterprise \
-  -f example-data-plane-values.yaml --version 1.15
+  -f example-data-plane-values.yaml --version 1.16
 ```
 
 For more details, refer to the [IOMETE Data Plane Helm Chart](helm/iomete-data-plane-enterprise/readme.md).
