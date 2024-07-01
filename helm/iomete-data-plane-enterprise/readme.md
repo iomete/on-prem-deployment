@@ -103,7 +103,7 @@ Configure the storage backend for the IOMETE Data Plane.
 | clusterDomain                                         | Kubernetes cluster domain.                                                                               | cluster.local | 1.9.2                  |
 | docker.repo                                           | Docker repository for pulling images. If you want to use a custom repository, you can change this value. | iomete        | 1.9.2                  |
 | ~~docker.appVersion~~                                 | ~~Version of the application Docker images. **Removed in 1.12.0**~~                                      | ~~1.11.0~~    | ~~1.11.0~~             |
-| docker.sparkVersion                                   | Spark version for the Docker image.                                                                      | 3.5.1         | 1.9.2                  |
+| docker.sparkVersion                                   | Spark version for the Docker image.                                                                      | 3.5.1-v1      | 1.9.2                  |
 | docker.pullPolicy                                     | Pull policy for Docker images.                                                                           | Always        | 1.9.2                  |
 | [docker.imagePullSecrets](#docker-image-pull-secrets) | Image pull secrets for Docker images.                                                                    | []            | 1.9.2                  |
 
