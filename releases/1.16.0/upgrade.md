@@ -43,4 +43,5 @@ helm upgrade --install -n iomete-system data-plane \
 
 Notes:
 - Manually restart `iom-identity` service after deployment completed.
+- Manually restart `iom-spark-connect-driver` pod by deleting it after deployment completed.
 
