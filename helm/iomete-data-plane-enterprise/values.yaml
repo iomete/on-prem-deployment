@@ -95,7 +95,7 @@ jupyterGateway:
 # Set `true` if prometheus-stack is installed in the cluster
 # You can install it with a separate helm chart
 monitoring:
-  installed: false
+  enabled: false
 
 logging:
   source: "kubernetes" # kubernetes, loki, elasticsearch, splunk
@@ -112,6 +112,10 @@ logging:
     # token: "" # Bearer token created in Splunk Settings -> Tokens
     # indexName: "main"
 
+# truststore.jks file should include the default public certificates
+# in order to work with common public resources (e.g. Github, Maven, Google).
+# Do not create truststore.jks file with only self-signed certificates.
+# Copy Java's default truststore and add your custom certificates to it.
 javaTrustStore:
   enabled: false
   secretName: java-truststore # Name of the secret with the truststore.jks file
@@ -121,3 +125,25 @@ javaTrustStore:
 
 ingress:
   httpsEnabled: true
+
+services:
+  sparkOperator:
+    # This annotations will be added to the Spark Operator Deployment when #monitoring.enabled is set to true
+    metricAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/metrics"
+      prometheus.io/port: "metrics"
+      prometheus.io/scheme: "http"
+      prometheus.io/interval: "15s"
+
+    resources: {}
+#    Uncomment below to use a custom resource configuration for the Spark Operator.
+#    Increase these values if handling over >100 Spark application submissions per minute.
+#    For such high-frequency submissions, set memory requests and limits around ~200Gi and CPU requests and limits to ~60-80 CPUs.
+#    resources:
+#      requests:
+#        memory: 16Gi
+#        cpu: 2
+#      limits:
+#        memory: 16Gi
+#        cpu: 16
