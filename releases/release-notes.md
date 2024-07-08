@@ -13,7 +13,7 @@
   - Redesigned result charts  
 - Added Spark / Iceberg / Scala version information to the Data-Plane Informatino page in the Settings menu  
 - Improved Cron editor in Spark Job configuration  
-- Overall design improvements, slowly moving a more compact design  
+- Overall design improvements: slowly moving to a more compact design  
 
 
 ## IOMETE Release 1.16.0
