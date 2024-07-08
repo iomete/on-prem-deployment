@@ -1,5 +1,21 @@
 # Release Notes
 
+
+## IOMETE Release 1.17.0  
+- Fixed issue where nessie catalog displayed wrong list of databases/tables in the SQL Explorer  
+- Launched beta version of Data-Catalog Explorer (Available in the Data-Catalog menu: from right-top side choose Explorer)  
+- Fixed "Invalid YeafOfEra" issue during Registration of Iceberg Tables.  
+- SQL Editor: Database Explorer improvements  
+  - Added partitions folder, you can view table partition columns.  
+  - Added Iceberg View support. `view` folder now available for iceberg catalogs  
+  - Improved error messaging in SQL Editor  
+  - Added item "Open in explorer" to the right-context menu. You can open the selected table in the Data-Catalog Explorer to view detailed information and snapshots  
+  - Redesigned result charts  
+- Added Spark / Iceberg / Scala version information to the Data-Plane Informatino page in the Settings menu  
+- Improved Cron editor in Spark Job configuration  
+- Overall design improvements, slowly moving a more compact design  
+
+
 ## IOMETE Release 1.16.0
 
 ### New Features
