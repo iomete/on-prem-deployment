@@ -1,6 +1,14 @@
 # Release Notes
 
 
+## IOMETE Release 1.18.0  
+- Fixed issue with `explain ...` sql statement.  
+- Added cell expand to the SQL Editor result grid. You can double click on the cell with multi-line value to expand it.  
+- Added import/download functionality to the worksheets in SQL Editor.  
+- Fixed issue with DBeaver and Power BI integrations.  
+- UI / Design improvements in SQL Editor.  
+
+
 ## IOMETE Release 1.17.0  
 - Fixed issue where nessie catalog displayed wrong list of databases/tables in the SQL Explorer  
 - Launched beta version of Data-Catalog Explorer (Available in the Data-Catalog menu: from right-top side choose Explorer)  

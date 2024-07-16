@@ -2,7 +2,7 @@
 
 - **Helm Repository:** https://chartmuseum.iomete.com
 - **Chart Name:** `iomete-data-plane-enterprise`
-- **Latest Version:** `1.17.0`
+- **Latest Version:** `1.18.0`
 
 ## Quick Start
 
@@ -13,7 +13,7 @@ helm repo update
 
 # Deploy IOMETE Data Plane (to customize the installation see the Configuration section)
 helm upgrade --install -n iomete-system iomete-data-plane \
-  iomete/iomete-data-plane-enterprise --version 1.17.0
+  iomete/iomete-data-plane-enterprise --version 1.18.0
 ```
 
 ## Configuration
@@ -102,7 +102,7 @@ Configure the storage backend for the IOMETE Data Plane.
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------- | ---------------------- |
 | clusterDomain                                         | Kubernetes cluster domain.                                                                               | cluster.local | 1.9.2                  |
 | docker.repo                                           | Docker repository for pulling images. If you want to use a custom repository, you can change this value. | iomete        | 1.9.2                  |
-| docker.sparkVersion                                   | Spark version for the Docker image.                                                                      | 3.5.1-v1      | 1.9.2                  |
+| docker.sparkVersion                                   | Spark version for the Docker image.                                                                      | 3.5.1-v2      | 1.9.2                  |
 | docker.pullPolicy                                     | Pull policy for Docker images.                                                                           | Always        | 1.9.2                  |
 | [docker.imagePullSecrets](#docker-image-pull-secrets) | Image pull secrets for Docker images.                                                                    | []            | 1.9.2                  |
 
