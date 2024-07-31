@@ -2,7 +2,7 @@
 
 - **Helm Repository:** https://chartmuseum.iomete.com
 - **Chart Name:** `iomete-data-plane-enterprise`
-- **Latest Version:** `1.18.0`
+- **Latest Version:** `1.19.0`
 
 ## Quick Start
 
@@ -13,7 +13,7 @@ helm repo update
 
 # Deploy IOMETE Data Plane (to customize the installation see the Configuration section)
 helm upgrade --install -n iomete-system iomete-data-plane \
-  iomete/iomete-data-plane-enterprise --version 1.18.0
+  iomete/iomete-data-plane-enterprise --version 1.19.0
 ```
 
 ## Configuration
