@@ -35,7 +35,7 @@ database:
     mode: "disable" # disable, verify-full
 
 spark:
-  logLevel: warn
+  logLevel: info
 
 keycloak:
   enabled: true
@@ -96,6 +96,23 @@ jupyterGateway:
 # You can install it with a separate helm chart
 monitoring:
   enabled: false
+  # This annotations will be added to the iom-core, iom-sql, iom-identity service when #monitoring.enabled is set to true
+  iomServices:
+    metricAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/q/metrics"
+      prometheus.io/port: "http"
+      prometheus.io/scheme: "http"
+      prometheus.io/interval: "15s"
+
+  sparkOperator:
+    # This annotations will be added to the Spark Operator Deployment when #monitoring.enabled is set to true
+    metricAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/metrics"
+      prometheus.io/port: "metrics"
+      prometheus.io/scheme: "http"
+      prometheus.io/interval: "15s"
 
 logging:
   source: "kubernetes" # kubernetes, loki, elasticsearch, splunk
@@ -111,6 +128,18 @@ logging:
     # endpoint: "https://splunk-enterprise-standalone-service:8089"
     # token: "" # Bearer token created in Splunk Settings -> Tokens
     # indexName: "main"
+
+secretStore:
+    # Currently only Database, Kubernetes and HashiCorp Vault supported.
+    type: kubernetes # database, kubernetes, vault
+    vaultSettings: {}
+      # endpoint: "http://vault.vault.svc.cluster.local:8200"
+      # path: "/v1/secret/data/iomete/dev"
+      # token: "root"
+      # # if tokenSecret is set, the token will be read from the secret
+      # tokenSecret: {}
+      #   # name: secret-name
+      #   # key: token
 
 # truststore.jks file should include the default public certificates
 # in order to work with common public resources (e.g. Github, Maven, Google).
@@ -128,14 +157,6 @@ ingress:
 
 services:
   sparkOperator:
-    # This annotations will be added to the Spark Operator Deployment when #monitoring.enabled is set to true
-    metricAnnotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/path: "/metrics"
-      prometheus.io/port: "metrics"
-      prometheus.io/scheme: "http"
-      prometheus.io/interval: "15s"
-
     resources: {}
 #    Uncomment below to use a custom resource configuration for the Spark Operator.
 #    Increase these values if handling over >100 Spark application submissions per minute.
