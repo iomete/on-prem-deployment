@@ -65,12 +65,16 @@ helm repo update
 
 ### Deploying IOMETE Data Plane Base
 
-IOMETE Data Plane Base is a base deployment for IOMETE Data Plane. It includes CRDs, ClusterRole, Lakehouse Service Account, and Roles.
+IOMETE Data Plane Base is a base deployment for IOMETE Data Plane. It includes CRDs, Lakehouse Service Account, and Roles.
+
+> **Note:** This deployment includes cluster-level objects such as CRDs and webhooks. If you do not have the necessary permissions to deploy these objects (i.e., you cannot deploy cluster-level objects), please coordinate with your Kubernetes Admins to perform this step. The Helm chart needs to be deployed by someone with the appropriate access.
 
 ```shell
+# Kubernetes admin: if you haven't added the repo, please see the previous step how to add it.
 helm upgrade --install -n iomete-system data-plane-base \
   iomete/iomete-data-plane-base --version 1.13
 ```
+
 See the [IOMETE Data Plane Base Helm Chart](helm/iomete-data-plane-base/readme.md) for more details.
 
 ### Launching IOMETE Data Plane
